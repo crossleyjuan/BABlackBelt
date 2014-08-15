@@ -14,10 +14,12 @@ namespace BABlackBelt
 
         Dictionary<int, Entity> _entities = new Dictionary<int,Entity>();
         List<Entity> _selectedEntities = new List<Entity>();
+        private Settings _projectSettings;
 
-        public SelectObjects()
+        public SelectObjects(string projectFolder)
         {
             InitializeComponent();
+            _projectSettings = Settings.getProjectSettings(projectFolder);
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -48,7 +50,7 @@ namespace BABlackBelt
 
             if (chkDependant.Checked)
             {
-                DataConnection con = DataConnectionFactory.getConnection();
+                DataConnection con = DataConnectionFactory.getConnection(_projectSettings["ConnectionString"]);
                 DataTable dtAttributes = con.RunQuery("SELECT idEntRelated from attrib where idEnt = " + ent.idEnt + " and idEntRelated is not null");
 
                 foreach (DataRow row in dtAttributes.Rows)
@@ -63,7 +65,7 @@ namespace BABlackBelt
 
         private void SelectObjects_Load(object sender, EventArgs e)
         {
-            DataConnection con = DataConnectionFactory.getConnection();
+            DataConnection con = DataConnectionFactory.getConnection(_projectSettings["ConnectionString"]);
             DataTable dtEntities = con.RunQuery("SELECT * from Entity order by EntName");
 
             foreach (DataRow row in dtEntities.Rows)

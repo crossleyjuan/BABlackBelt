@@ -19,17 +19,18 @@ namespace BABlackBelt
         }
 
         List<DataParameter> _parameters = new List<DataParameter>();
+        private string _connectionString;
 
-        public DataConnection()
+        public DataConnection(string connectionString)
         {
+            _connectionString = connectionString;
         }
 
         public void Open()
         {
             _connection = new SqlConnection();
-            string connectionString = ConfigurationSettings.AppSettings["ConnectionString"];
 
-            _connection.ConnectionString = connectionString;
+            _connection.ConnectionString = _connectionString;
             _connection.Open();
 
         }

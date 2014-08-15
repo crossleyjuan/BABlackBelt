@@ -9,17 +9,18 @@ namespace BABlackBelt
     {
 
         private static DataConnection _connection;
+        private static Dictionary<string, DataConnection> _connections = new Dictionary<string, DataConnection>();
 
-        public static DataConnection getConnection()
+        public static DataConnection getConnection(string connectionString)
         {
-            if (_connection == null)
+            if (!_connections.ContainsKey(connectionString))
             {
-                DataConnection con = new DataConnection();
-                con.Open();
-                _connection = con;
+                DataConnection tempCon = new DataConnection(connectionString);
+                _connections[connectionString] = tempCon;
+                tempCon.Open();
             }
-            return _connection;
-
+            DataConnection con = _connections[connectionString];
+            return con;
         }
     }
 }

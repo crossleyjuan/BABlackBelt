@@ -39,6 +39,33 @@ namespace BABlackBelt.Git
             return result;
         }
 
+        public string Reset()
+        {
+            return ExecuteGitCommand("reset --hard");
+        }
+
+        public void ShowDiff(string file)
+        {
+            ExecuteGitCommand("difftool -y " + file, false);
+        }
+
+        public string GetGlobal(string global)
+        {
+            string value = ExecuteGitCommand("config " + global);
+            if (string.IsNullOrEmpty(value))
+            {
+                value = "";
+            }
+            value = value.Replace('\n', ' ');
+            value = value.Replace('\r', ' ');
+            return value.Trim();
+        }
+
+        public void setGlobal(string global, string value)
+        {
+            ExecuteGitCommand(string.Format("config {0} \"{1}\"", global, value));
+        }
+
         public string Pull(string remote, string branch)
         {
             string command = string.Format("pull {0} {1}", remote, branch);
@@ -116,6 +143,11 @@ namespace BABlackBelt.Git
 
         public string ExecuteGitCommand(string command)
         {
+            return ExecuteGitCommand(command, true);
+        }
+
+        public string ExecuteGitCommand(string command, bool wait)
+        {
             ProcessStartInfo gitInfo = new ProcessStartInfo();
             gitInfo.CreateNoWindow = true;
             gitInfo.RedirectStandardError = true;
@@ -131,13 +163,20 @@ namespace BABlackBelt.Git
             gitProcess.StartInfo = gitInfo;
             gitProcess.Start();
 
-            string stderr_str = gitProcess.StandardError.ReadToEnd();  // pick up STDERR
-            string stdout_str = gitProcess.StandardOutput.ReadToEnd(); // pick up STDOUT
+            if (wait)
+            {
+                string stderr_str = gitProcess.StandardError.ReadToEnd();  // pick up STDERR
+                string stdout_str = gitProcess.StandardOutput.ReadToEnd(); // pick up STDOUT
 
-            gitProcess.WaitForExit();
-            gitProcess.Close();
+                gitProcess.WaitForExit();
+                gitProcess.Close();
 
-            return stdout_str;
+                return stdout_str;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public string Commit(string comment)

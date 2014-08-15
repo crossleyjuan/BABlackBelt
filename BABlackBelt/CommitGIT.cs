@@ -17,11 +17,15 @@ namespace BABlackBelt
         List<GitChange> _gitChanges;
         GitUtil _git;
         string _currentBranch = "master";
+        string _gitFolder;
+        Settings _projectSettings;
 
         public CommitGIT(string gitFolder)
         {
             InitializeComponent();
             _git = new GitUtil(gitFolder);
+            _gitFolder = gitFolder;
+            _projectSettings = Settings.getProjectSettings(_gitFolder);
         }
 
         private void CommitGIT_Load(object sender, EventArgs e)
@@ -31,18 +35,23 @@ namespace BABlackBelt
 
         private void RefreshCodeBase()
         {
+            _git.Reset();
+
+            string connectionString = _projectSettings["ConnectionString"];
+            DataConnection con = DataConnectionFactory.getConnection(connectionString);
+            DataTable dtRules = con.RunQuery("SELECT * from Bizrule order by ruleName");
+
+            string rulesFolder = Path.Combine( _gitFolder, "Rules");
+
+            // Always cleanup the previous directory to check for deleted rules
+            if (Directory.Exists(rulesFolder))
+            {
+                Directory.Delete(rulesFolder, true);
+            }
+            Directory.CreateDirectory(rulesFolder);
             // the pull is required prior to commit
             string resultPull = _git.Pull("origin", _currentBranch);
 
-            DataConnection con = DataConnectionFactory.getConnection();
-            DataTable dtRules = con.RunQuery("SELECT * from Bizrule order by ruleName");
-
-            string rulesFolder = (string)ConfigurationSettings.AppSettings["RulesFolder"];
-
-            if (!Directory.Exists(rulesFolder))
-            {
-                Directory.CreateDirectory(rulesFolder);
-            }
             StatusScreen screen = StatusScreen.ShowStatus(dtRules.Rows.Count);
 
             int current = 0;
@@ -100,7 +109,8 @@ namespace BABlackBelt
             string resultPull = _git.Pull("origin", _currentBranch);
 
             GitResult.ShowResult("git pull origin master:\r\n\r\n" + resultPull);
-            if (resultPull.IndexOf("Already up-to-date.") > -1)
+
+            if (MessageBox.Show("Do you want to push the changes?", "Push", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
             {
                 string pushResult = _git.Push("origin", _currentBranch);
 
@@ -108,5 +118,24 @@ namespace BABlackBelt
             }
             RefreshCodeBase();
         }
+
+        private void mnuDiffTool_Click(object sender, EventArgs e)
+        {
+            GitChange change = (GitChange)lstChanges.SelectedItem;
+
+            if (change != null)
+            {
+                _git.ShowDiff(change.File);
+            }
+        }
+
+        private void lstChanges_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F3)
+            {
+                mnuDiffTool_Click(sender, null);
+            }
+        }
+
     }
 }

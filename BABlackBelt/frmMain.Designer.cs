@@ -28,10 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.connectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.disconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.commitRulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.codeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,6 +45,7 @@
             this.txtGitFolder = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.testEmailServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,7 +65,10 @@
             // 
             this.connectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.connectToolStripMenuItem,
-            this.disconnectToolStripMenuItem});
+            this.disconnectToolStripMenuItem,
+            this.preferencesToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.exitToolStripMenuItem});
             this.connectionToolStripMenuItem.Name = "connectionToolStripMenuItem";
             this.connectionToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
             this.connectionToolStripMenuItem.Text = "Connection";
@@ -68,14 +76,37 @@
             // connectToolStripMenuItem
             // 
             this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            this.connectToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.connectToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.connectToolStripMenuItem.Text = "Connect";
+            this.connectToolStripMenuItem.Visible = false;
+            this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
             // 
             // disconnectToolStripMenuItem
             // 
             this.disconnectToolStripMenuItem.Name = "disconnectToolStripMenuItem";
-            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.disconnectToolStripMenuItem.Text = "Disconnect";
+            this.disconnectToolStripMenuItem.Visible = false;
+            // 
+            // preferencesToolStripMenuItem
+            // 
+            this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.preferencesToolStripMenuItem.Text = "Preferences";
+            this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(132, 6);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // gitToolStripMenuItem
             // 
@@ -88,7 +119,7 @@
             // commitRulesToolStripMenuItem
             // 
             this.commitRulesToolStripMenuItem.Name = "commitRulesToolStripMenuItem";
-            this.commitRulesToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.commitRulesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.commitRulesToolStripMenuItem.Text = "Commit Rules";
             this.commitRulesToolStripMenuItem.Click += new System.EventHandler(this.commitRulesToolStripMenuItem_Click);
             // 
@@ -96,7 +127,8 @@
             // 
             this.codeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.prettifyMyRuleToolStripMenuItem,
-            this.dBInfoToolStripMenuItem});
+            this.dBInfoToolStripMenuItem,
+            this.testEmailServerToolStripMenuItem});
             this.codeToolStripMenuItem.Name = "codeToolStripMenuItem";
             this.codeToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.codeToolStripMenuItem.Text = "Code";
@@ -104,21 +136,21 @@
             // prettifyMyRuleToolStripMenuItem
             // 
             this.prettifyMyRuleToolStripMenuItem.Name = "prettifyMyRuleToolStripMenuItem";
-            this.prettifyMyRuleToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.prettifyMyRuleToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.prettifyMyRuleToolStripMenuItem.Text = "Prettify my rule";
             this.prettifyMyRuleToolStripMenuItem.Click += new System.EventHandler(this.prettifyMyRuleToolStripMenuItem_Click);
             // 
             // dBInfoToolStripMenuItem
             // 
             this.dBInfoToolStripMenuItem.Name = "dBInfoToolStripMenuItem";
-            this.dBInfoToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.dBInfoToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.dBInfoToolStripMenuItem.Text = "DB Info";
             this.dBInfoToolStripMenuItem.Click += new System.EventHandler(this.dBInfoToolStripMenuItem_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(44, 86);
+            this.label1.Location = new System.Drawing.Point(36, 94);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(110, 13);
             this.label1.TabIndex = 1;
@@ -126,7 +158,7 @@
             // 
             // txtGitFolder
             // 
-            this.txtGitFolder.Location = new System.Drawing.Point(176, 86);
+            this.txtGitFolder.Location = new System.Drawing.Point(168, 94);
             this.txtGitFolder.Name = "txtGitFolder";
             this.txtGitFolder.Size = new System.Drawing.Size(313, 20);
             this.txtGitFolder.TabIndex = 2;
@@ -134,7 +166,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(496, 86);
+            this.button1.Location = new System.Drawing.Point(488, 94);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 3;
@@ -152,6 +184,13 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // testEmailServerToolStripMenuItem
+            // 
+            this.testEmailServerToolStripMenuItem.Name = "testEmailServerToolStripMenuItem";
+            this.testEmailServerToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.testEmailServerToolStripMenuItem.Text = "Test Email Server";
+            this.testEmailServerToolStripMenuItem.Click += new System.EventHandler(this.testEmailServerToolStripMenuItem_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -162,8 +201,10 @@
             this.Controls.Add(this.txtGitFolder);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "frmMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Bizagi BlackBelt";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
@@ -188,6 +229,10 @@
         private System.Windows.Forms.TextBox txtGitFolder;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testEmailServerToolStripMenuItem;
     }
 }
 
