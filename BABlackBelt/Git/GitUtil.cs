@@ -165,8 +165,8 @@ namespace BABlackBelt.Git
 
             if (wait)
             {
-                string stderr_str = gitProcess.StandardError.ReadToEnd();  // pick up STDERR
                 string stdout_str = gitProcess.StandardOutput.ReadToEnd(); // pick up STDOUT
+                string stderr_str = gitProcess.StandardError.ReadToEnd();  // pick up STDERR
 
                 gitProcess.WaitForExit();
                 gitProcess.Close();

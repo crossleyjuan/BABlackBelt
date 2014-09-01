@@ -36,6 +36,9 @@
             this.lstChanges = new System.Windows.Forms.CheckedListBox();
             this.mnuFile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuDiffTool = new System.Windows.Forms.ToolStripMenuItem();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtFilter = new System.Windows.Forms.TextBox();
+            this.btnApplyFilter = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.mnuFile.SuspendLayout();
             this.SuspendLayout();
@@ -43,6 +46,9 @@
             // panel1
             // 
             this.panel1.AutoSize = true;
+            this.panel1.Controls.Add(this.btnApplyFilter);
+            this.panel1.Controls.Add(this.txtFilter);
+            this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -105,6 +111,33 @@
             this.mnuDiffTool.Text = " Show Diff Tool";
             this.mnuDiffTool.Click += new System.EventHandler(this.mnuDiffTool_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(248, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(29, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Filter";
+            // 
+            // txtFilter
+            // 
+            this.txtFilter.Location = new System.Drawing.Point(284, 10);
+            this.txtFilter.Name = "txtFilter";
+            this.txtFilter.Size = new System.Drawing.Size(249, 20);
+            this.txtFilter.TabIndex = 5;
+            this.txtFilter.TextChanged += new System.EventHandler(this.txtFilter_TextChanged);
+            // 
+            // btnApplyFilter
+            // 
+            this.btnApplyFilter.Location = new System.Drawing.Point(539, 7);
+            this.btnApplyFilter.Name = "btnApplyFilter";
+            this.btnApplyFilter.Size = new System.Drawing.Size(92, 23);
+            this.btnApplyFilter.TabIndex = 6;
+            this.btnApplyFilter.Text = "Apply Filter";
+            this.btnApplyFilter.UseVisualStyleBackColor = true;
+            this.btnApplyFilter.Click += new System.EventHandler(this.btnApplyFilter_Click);
+            // 
             // CommitGIT
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -120,6 +153,7 @@
             this.Text = "CommitGIT";
             this.Load += new System.EventHandler(this.CommitGIT_Load);
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.mnuFile.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -135,5 +169,8 @@
         private System.Windows.Forms.CheckedListBox lstChanges;
         private System.Windows.Forms.ContextMenuStrip mnuFile;
         private System.Windows.Forms.ToolStripMenuItem mnuDiffTool;
+        private System.Windows.Forms.Button btnApplyFilter;
+        private System.Windows.Forms.TextBox txtFilter;
+        private System.Windows.Forms.Label label1;
     }
 }

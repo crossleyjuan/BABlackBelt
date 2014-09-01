@@ -160,5 +160,10 @@ namespace BABlackBelt
         {
 
         }
+
+        private void advancedCompareToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

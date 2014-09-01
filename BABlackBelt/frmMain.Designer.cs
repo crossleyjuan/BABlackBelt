@@ -41,11 +41,12 @@
             this.codeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.prettifyMyRuleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dBInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testEmailServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.advancedCompareToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.txtGitFolder = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.testEmailServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -120,7 +121,7 @@
             // 
             this.commitRulesToolStripMenuItem.Name = "commitRulesToolStripMenuItem";
             this.commitRulesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.commitRulesToolStripMenuItem.Text = "Commit Rules";
+            this.commitRulesToolStripMenuItem.Text = "Commit Elements";
             this.commitRulesToolStripMenuItem.Click += new System.EventHandler(this.commitRulesToolStripMenuItem_Click);
             // 
             // codeToolStripMenuItem
@@ -128,7 +129,8 @@
             this.codeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.prettifyMyRuleToolStripMenuItem,
             this.dBInfoToolStripMenuItem,
-            this.testEmailServerToolStripMenuItem});
+            this.testEmailServerToolStripMenuItem,
+            this.advancedCompareToolStripMenuItem});
             this.codeToolStripMenuItem.Name = "codeToolStripMenuItem";
             this.codeToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.codeToolStripMenuItem.Text = "Code";
@@ -136,16 +138,30 @@
             // prettifyMyRuleToolStripMenuItem
             // 
             this.prettifyMyRuleToolStripMenuItem.Name = "prettifyMyRuleToolStripMenuItem";
-            this.prettifyMyRuleToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.prettifyMyRuleToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.prettifyMyRuleToolStripMenuItem.Text = "Prettify my rule";
             this.prettifyMyRuleToolStripMenuItem.Click += new System.EventHandler(this.prettifyMyRuleToolStripMenuItem_Click);
             // 
             // dBInfoToolStripMenuItem
             // 
             this.dBInfoToolStripMenuItem.Name = "dBInfoToolStripMenuItem";
-            this.dBInfoToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.dBInfoToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.dBInfoToolStripMenuItem.Text = "DB Info";
             this.dBInfoToolStripMenuItem.Click += new System.EventHandler(this.dBInfoToolStripMenuItem_Click);
+            // 
+            // testEmailServerToolStripMenuItem
+            // 
+            this.testEmailServerToolStripMenuItem.Name = "testEmailServerToolStripMenuItem";
+            this.testEmailServerToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.testEmailServerToolStripMenuItem.Text = "Test Email Server";
+            this.testEmailServerToolStripMenuItem.Click += new System.EventHandler(this.testEmailServerToolStripMenuItem_Click);
+            // 
+            // advancedCompareToolStripMenuItem
+            // 
+            this.advancedCompareToolStripMenuItem.Name = "advancedCompareToolStripMenuItem";
+            this.advancedCompareToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.advancedCompareToolStripMenuItem.Text = "Advanced Compare";
+            this.advancedCompareToolStripMenuItem.Click += new System.EventHandler(this.advancedCompareToolStripMenuItem_Click);
             // 
             // label1
             // 
@@ -183,13 +199,6 @@
             this.button2.Text = "Clone";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // testEmailServerToolStripMenuItem
-            // 
-            this.testEmailServerToolStripMenuItem.Name = "testEmailServerToolStripMenuItem";
-            this.testEmailServerToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.testEmailServerToolStripMenuItem.Text = "Test Email Server";
-            this.testEmailServerToolStripMenuItem.Click += new System.EventHandler(this.testEmailServerToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -233,6 +242,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testEmailServerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem advancedCompareToolStripMenuItem;
     }
 }
 

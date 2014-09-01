@@ -19,6 +19,7 @@ namespace BABlackBelt
         string _currentBranch = "master";
         string _gitFolder;
         Settings _projectSettings;
+        bool _filteredList;
 
         public CommitGIT(string gitFolder)
         {
@@ -26,6 +27,7 @@ namespace BABlackBelt
             _git = new GitUtil(gitFolder);
             _gitFolder = gitFolder;
             _projectSettings = Settings.getProjectSettings(_gitFolder);
+            _filteredList = false;
         }
 
         private void CommitGIT_Load(object sender, EventArgs e)
@@ -35,48 +37,42 @@ namespace BABlackBelt
 
         private void RefreshCodeBase()
         {
+            this.Cursor = Cursors.WaitCursor;
+
             _git.Reset();
 
-            string connectionString = _projectSettings["ConnectionString"];
-            DataConnection con = DataConnectionFactory.getConnection(connectionString);
-            DataTable dtRules = con.RunQuery("SELECT * from Bizrule order by ruleName");
+            BAFolderSyncManager.SyncElements(_git, _currentBranch, _projectSettings, _gitFolder);
 
-            string rulesFolder = Path.Combine( _gitFolder, "Rules");
-
-            // Always cleanup the previous directory to check for deleted rules
-            if (Directory.Exists(rulesFolder))
-            {
-                Directory.Delete(rulesFolder, true);
-            }
-            Directory.CreateDirectory(rulesFolder);
-            // the pull is required prior to commit
-            string resultPull = _git.Pull("origin", _currentBranch);
-
-            StatusScreen screen = StatusScreen.ShowStatus(dtRules.Rows.Count);
-
-            int current = 0;
-            foreach (DataRow row in dtRules.Rows)
-            {
-                string ruleFileName = string.Format("{0}.brl", row["ruleName"].ToString());
-                string fileName = Path.Combine(rulesFolder, ruleFileName);
-                string content = (string)row["ruleFormula"];
-                if (content != null)
-                {
-                    byte[] data = System.Text.Encoding.UTF8.GetBytes(content);
-                    FileUtil.SaveFile(fileName, data);
-                }
-                screen.UpdateStatus(current++, "Refreshing: " + fileName);
-            }
-
-            screen.Close();
             _gitChanges = _git.GetStatus();
+            showChanges();
+        }
+
+        private void showChanges()
+        {
             lstChanges.Items.Clear();
+
+            string filter = txtFilter.Text;
+
+            filter = filter.ToUpper();
+            _filteredList = !string.IsNullOrEmpty(filter);
 
             foreach (GitChange change in _gitChanges)
             {
-                lstChanges.Items.Add(change);
+                bool filtered = false;
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    if (change.File.ToUpper().IndexOf(filter) == -1)
+                    {
+                        filtered = true;
+                    }
+                }
+                if (!filtered)
+                {
+                    lstChanges.Items.Add(change);
+                }
             }
 
+            this.Cursor = Cursors.Default;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -108,9 +104,18 @@ namespace BABlackBelt
 
             string resultPull = _git.Pull("origin", _currentBranch);
 
-            GitResult.ShowResult("git pull origin master:\r\n\r\n" + resultPull);
-
-            if (MessageBox.Show("Do you want to push the changes?", "Push", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            bool requireConfirmation = false;
+            if (resultPull.IndexOf("Already up-to-date") < 0)
+            {
+                GitResult.ShowResult("git pull origin master:\r\n\r\n" + resultPull);
+                requireConfirmation = true;
+            }
+            bool performPush = true;
+            if (requireConfirmation && MessageBox.Show("Do you want to push the changes?", "Push", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
+            {
+                performPush = false;
+            }
+            if (performPush)
             {
                 string pushResult = _git.Push("origin", _currentBranch);
 
@@ -134,6 +139,29 @@ namespace BABlackBelt
             if (e.KeyCode == Keys.F3)
             {
                 mnuDiffTool_Click(sender, null);
+            }
+        }
+
+        private void btnApplyFilter_Click(object sender, EventArgs e)
+        {
+            showChanges();
+            RefreshFilterStatus();
+        }
+
+        private void txtFilter_TextChanged(object sender, EventArgs e)
+        {
+            RefreshFilterStatus();
+        }
+
+        private void RefreshFilterStatus()
+        {
+            if (string.IsNullOrEmpty(txtFilter.Text) && _filteredList)
+            {
+                btnApplyFilter.Text = "Remove Filter";
+            }
+            else
+            {
+                btnApplyFilter.Text = "Apply Filter";
             }
         }
 
