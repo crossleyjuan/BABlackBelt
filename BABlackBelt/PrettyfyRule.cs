@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
+using ScintillaNET;
 
 namespace BABlackBelt
 {
@@ -30,6 +31,7 @@ namespace BABlackBelt
             {
                 comboBox1.Items.Add(row["ruleName"]);
             }
+            scintilla1.ConfigurationManager.Language = "js";
         }
 
         private void FormatCode(RichTextBox textBox)
@@ -91,27 +93,38 @@ namespace BABlackBelt
         {
         }
 
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            txtRuleCode.Text = "";
+            scintilla1.Text = "";
             btnSave.Enabled = false;
             btnLoad.Enabled = true;
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-
         }
 
         private void OnFind(string text)
         {
-            int start = txtRuleCode.SelectionStart;
+            int start = scintilla1.Selection.Start;
             if (start > 0)
             {
                 start++;
             }
-            int sel = txtRuleCode.Find(text, start, RichTextBoxFinds.None);
-            txtRuleCode.ScrollToCaret();
+            Range rg = scintilla1.FindReplace.Find(start, scintilla1.Text.Length, text, ScintillaNET.SearchFlags.Empty);
+            if (rg != null)
+            {
+                scintilla1.Selection.Start = rg.Start;
+                scintilla1.Selection.End = rg.End;
+
+                scintilla1.Scrolling.ScrollToCaret();
+            }
+            else
+            {
+                MessageBox.Show("Not found");
+            }
+            //scintilla1.ScrollToCaret();
         }
 
         private void findToolStripMenuItem_Click(object sender, EventArgs e)
@@ -126,24 +139,29 @@ namespace BABlackBelt
             DataConnection con = DataConnectionFactory.getConnection(_projectSettings["ConnectionString"]);
             DataTable dtRules = con.RunQuery("SELECT * from Bizrule where ruleName = '" + comboBox1.Text + "'");
 
-            txtRuleCode.Text = "";
+            scintilla1.Text = "";
             if (dtRules.Rows.Count > 0)
             {
                 string text = Convert.ToString(dtRules.Rows[0]["ruleFormula"]);
                 text = text.Replace("\r\n", "\n");
                 text = text.Replace("\n", "\r\n");
-                txtRuleCode.Text = text;
+                scintilla1.Text = text;
                 //FormatCode(txtRuleCode);
             }
-            btnSave.Enabled = true;
+            btnSave.Enabled = false;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            saveCurrentRule();
+        }
+
+        private void saveCurrentRule()
+        {
             DataConnection con = DataConnectionFactory.getConnection(_projectSettings["ConnectionString"]);
             DataTable dtRules = con.RunQuery("SELECT * from Bizrule where ruleName = '" + comboBox1.Text + "'");
 
-            string ruleFormula = txtRuleCode.Text;
+            string ruleFormula = scintilla1.Text;
 
             ruleFormula = ruleFormula.Replace("\r\n", "\n");
 
@@ -152,6 +170,13 @@ namespace BABlackBelt
             con.CreateParameter("RuleFormula", SqlDbType.VarChar, ruleFormula);
 
             con.ExecuteUpdate(sql);
+
+            btnSave.Enabled = false;
+        }
+
+        private void scintilla1_TextChanged(object sender, EventArgs e)
+        {
+            btnSave.Enabled = true;
         }
 
     }

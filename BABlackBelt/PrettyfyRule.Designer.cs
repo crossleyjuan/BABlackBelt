@@ -37,10 +37,11 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.txtRuleCode = new System.Windows.Forms.RichTextBox();
+            this.scintilla1 = new ScintillaNET.Scintilla();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scintilla1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -68,6 +69,7 @@
             // 
             // btnSave
             // 
+            this.btnSave.Enabled = false;
             this.btnSave.Location = new System.Drawing.Point(378, 17);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
@@ -131,23 +133,31 @@
             this.findToolStripMenuItem.Text = "Find";
             this.findToolStripMenuItem.Click += new System.EventHandler(this.findToolStripMenuItem_Click);
             // 
-            // txtRuleCode
+            // scintilla1
             // 
-            this.txtRuleCode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtRuleCode.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRuleCode.HideSelection = false;
-            this.txtRuleCode.Location = new System.Drawing.Point(0, 76);
-            this.txtRuleCode.Name = "txtRuleCode";
-            this.txtRuleCode.Size = new System.Drawing.Size(637, 476);
-            this.txtRuleCode.TabIndex = 2;
-            this.txtRuleCode.Text = "";
+            this.scintilla1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scintilla1.Location = new System.Drawing.Point(0, 76);
+            this.scintilla1.Name = "scintilla1";
+            this.scintilla1.Size = new System.Drawing.Size(637, 476);
+            this.scintilla1.Styles.BraceBad.FontName = "Verdana\0\0\0\0\0\0\0\0\0\0\0\0\0";
+            this.scintilla1.Styles.BraceLight.FontName = "Verdana\0\0\0\0\0\0\0\0\0\0\0\0\0";
+            this.scintilla1.Styles.CallTip.FontName = "Segoe UI\0\0\0\0\0\0\0\0\0\0\0\0";
+            this.scintilla1.Styles.ControlChar.FontName = "Verdana\0\0\0\0\0\0\0\0\0\0\0\0\0";
+            this.scintilla1.Styles.Default.BackColor = System.Drawing.SystemColors.Window;
+            this.scintilla1.Styles.Default.FontName = "Verdana\0\0\0\0\0\0\0\0\0\0\0\0\0";
+            this.scintilla1.Styles.IndentGuide.FontName = "Verdana\0\0\0\0\0\0\0\0\0\0\0\0\0";
+            this.scintilla1.Styles.LastPredefined.FontName = "Verdana\0\0\0\0\0\0\0\0\0\0\0\0\0";
+            this.scintilla1.Styles.LineNumber.FontName = "Verdana\0\0\0\0\0\0\0\0\0\0\0\0\0";
+            this.scintilla1.Styles.Max.FontName = "Verdana\0\0\0\0\0\0\0\0\0\0\0\0\0";
+            this.scintilla1.TabIndex = 3;
+            this.scintilla1.TextChanged += new System.EventHandler(this.scintilla1_TextChanged);
             // 
             // PrettyfyRule
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(637, 552);
-            this.Controls.Add(this.txtRuleCode);
+            this.Controls.Add(this.scintilla1);
             this.Controls.Add(this.panel1);
             this.Name = "PrettyfyRule";
             this.Text = "PrettyfyRule";
@@ -158,6 +168,7 @@
             this.panel2.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scintilla1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -166,7 +177,6 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.RichTextBox txtRuleCode;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
@@ -175,5 +185,6 @@
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBox1;
+        private ScintillaNET.Scintilla scintilla1;
     }
 }

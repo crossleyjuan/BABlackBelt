@@ -11,10 +11,23 @@ namespace BABlackBelt
 {
     public partial class StatusScreen : Form
     {
+        public int MaxValue
+        {
+            get
+            {
+                return this.pbStatus.Maximum;
+            }
+            set
+            {
+                this.pbStatus.Maximum = value;
+
+            }
+        }
+
         private StatusScreen(int max)
         {
             InitializeComponent();
-            this.pbStatus.Maximum = max;
+            MaxValue = max;
         }
 
         public static StatusScreen ShowStatus(int max)
