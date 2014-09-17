@@ -26,7 +26,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>\\slk30d0150v\workspace\Software\BABlackBelt\</InstallUrl>
-    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationRevision>15</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -105,6 +105,12 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmUpdateBizagiLogo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmUpdateBizagiLogo.Designer.cs">
+      <DependentUpon>frmUpdateBizagiLogo.cs</DependentUpon>
+    </Compile>
     <Compile Include="GitResult.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -151,6 +157,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmUpdateBizagiLogo.resx">
+      <DependentUpon>frmUpdateBizagiLogo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GitResult.resx">
       <DependentUpon>GitResult.cs</DependentUpon>

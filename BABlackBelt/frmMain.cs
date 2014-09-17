@@ -165,5 +165,12 @@ namespace BABlackBelt
         {
 
         }
+
+        private void updateBizagiLogoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmUpdateBizagiLogo logo = new frmUpdateBizagiLogo(txtGitFolder.Text);
+
+            logo.Show();
+        }
     }
 }

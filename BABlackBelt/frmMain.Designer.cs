@@ -47,6 +47,7 @@
             this.txtGitFolder = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.updateBizagiLogoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -120,7 +121,7 @@
             // commitRulesToolStripMenuItem
             // 
             this.commitRulesToolStripMenuItem.Name = "commitRulesToolStripMenuItem";
-            this.commitRulesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.commitRulesToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.commitRulesToolStripMenuItem.Text = "Commit Elements";
             this.commitRulesToolStripMenuItem.Click += new System.EventHandler(this.commitRulesToolStripMenuItem_Click);
             // 
@@ -130,7 +131,8 @@
             this.prettifyMyRuleToolStripMenuItem,
             this.dBInfoToolStripMenuItem,
             this.testEmailServerToolStripMenuItem,
-            this.advancedCompareToolStripMenuItem});
+            this.advancedCompareToolStripMenuItem,
+            this.updateBizagiLogoToolStripMenuItem});
             this.codeToolStripMenuItem.Name = "codeToolStripMenuItem";
             this.codeToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.codeToolStripMenuItem.Text = "Code";
@@ -200,6 +202,13 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // updateBizagiLogoToolStripMenuItem
+            // 
+            this.updateBizagiLogoToolStripMenuItem.Name = "updateBizagiLogoToolStripMenuItem";
+            this.updateBizagiLogoToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.updateBizagiLogoToolStripMenuItem.Text = "Update Bizagi Logo";
+            this.updateBizagiLogoToolStripMenuItem.Click += new System.EventHandler(this.updateBizagiLogoToolStripMenuItem_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -243,6 +252,7 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testEmailServerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem advancedCompareToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem updateBizagiLogoToolStripMenuItem;
     }
 }
 
