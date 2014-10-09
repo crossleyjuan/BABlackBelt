@@ -20,7 +20,7 @@ namespace BABlackBelt
 
         public static byte[] LoadFile(string file)
         {
-            FileStream fs = new FileStream(file, FileMode.Open);
+            FileStream fs = new FileStream(file, FileMode.OpenOrCreate);
 
             byte[] buffer = new byte[1024];
             MemoryStream ms = new MemoryStream();
@@ -32,7 +32,24 @@ namespace BABlackBelt
             }
             ms.Flush();
 
+            fs.Close();
+
             return ms.ToArray();
+        }
+
+        public static string GetUserDirectory()
+        {
+            string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)).FullName;
+            if (Environment.OSVersion.Version.Major >= 6)
+            {
+                path = Directory.GetParent(path).ToString();
+            }
+            return path;
+        }
+
+        public static void createFolder(string destFolder)
+        {
+            Directory.CreateDirectory(destFolder);
         }
     }
 }

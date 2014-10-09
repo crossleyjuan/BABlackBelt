@@ -59,7 +59,6 @@
             this.Name = "StatusScreen";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "StatusScreen";
-            this.TopMost = true;
             this.ResumeLayout(false);
             this.PerformLayout();
 
