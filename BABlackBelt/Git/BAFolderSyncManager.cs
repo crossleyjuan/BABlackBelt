@@ -156,17 +156,19 @@ namespace BABlackBelt.Git
         public static void SyncElements(Git.GitUtil gitUtil, string currentBranch, Settings projectSettings, string folder)
         {
             CleanupFolders(folder);
-
             string connectionString = projectSettings["ConnectionString"];
             DataConnection con = DataConnectionFactory.getConnection(connectionString);
 
-            StatusScreen fullProcessScreen = StatusScreen.ShowStatus(2);
+            StatusScreen fullProcessScreen = StatusScreen.ShowStatus(3);
+
+            gitUtil.Pull("origin", currentBranch);
+            fullProcessScreen.UpdateStatus(1, "Gill pull done!");
 
             RunRulesRefresh(con, folder);
-            fullProcessScreen.UpdateStatus(1, "Rules updated");
+            fullProcessScreen.UpdateStatus(2, "Rules updated");
 
             RunEntitiesRefresh(con, folder);
-            fullProcessScreen.UpdateStatus(2, "Entities updated");
+            fullProcessScreen.UpdateStatus(3, "Entities updated");
 
             fullProcessScreen.Close();
         }
