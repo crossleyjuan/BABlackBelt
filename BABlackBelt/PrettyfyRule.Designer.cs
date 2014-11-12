@@ -38,6 +38,11 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scintilla1 = new ScintillaNET.Scintilla();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createStatementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuIf = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuFor = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuExpression = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -109,7 +114,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.toolsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(637, 24);
@@ -129,7 +135,7 @@
             // 
             this.findToolStripMenuItem.Name = "findToolStripMenuItem";
             this.findToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-            this.findToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.findToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.findToolStripMenuItem.Text = "Find";
             this.findToolStripMenuItem.Click += new System.EventHandler(this.findToolStripMenuItem_Click);
             // 
@@ -151,6 +157,44 @@
             this.scintilla1.Styles.Max.FontName = "Verdana\0\0\0\0\0\0\0\0\0\0\0\0\0";
             this.scintilla1.TabIndex = 3;
             this.scintilla1.TextChanged += new System.EventHandler(this.scintilla1_TextChanged);
+            // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.createStatementToolStripMenuItem});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Text = "Tools";
+            // 
+            // createStatementToolStripMenuItem
+            // 
+            this.createStatementToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuExpression,
+            this.mnuIf,
+            this.mnuFor});
+            this.createStatementToolStripMenuItem.Name = "createStatementToolStripMenuItem";
+            this.createStatementToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.createStatementToolStripMenuItem.Text = "Create Statement";
+            // 
+            // mnuIf
+            // 
+            this.mnuIf.Name = "mnuIf";
+            this.mnuIf.Size = new System.Drawing.Size(152, 22);
+            this.mnuIf.Text = "If...";
+            this.mnuIf.Click += new System.EventHandler(this.ifToolStripMenuItem_Click);
+            // 
+            // mnuFor
+            // 
+            this.mnuFor.Name = "mnuFor";
+            this.mnuFor.Size = new System.Drawing.Size(152, 22);
+            this.mnuFor.Text = "For...";
+            // 
+            // mnuExpression
+            // 
+            this.mnuExpression.Name = "mnuExpression";
+            this.mnuExpression.Size = new System.Drawing.Size(152, 22);
+            this.mnuExpression.Text = "Expression...";
+            this.mnuExpression.Click += new System.EventHandler(this.mnuExpression_Click);
             // 
             // PrettyfyRule
             // 
@@ -186,5 +230,10 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBox1;
         private ScintillaNET.Scintilla scintilla1;
+        private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createStatementToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuIf;
+        private System.Windows.Forms.ToolStripMenuItem mnuFor;
+        private System.Windows.Forms.ToolStripMenuItem mnuExpression;
     }
 }

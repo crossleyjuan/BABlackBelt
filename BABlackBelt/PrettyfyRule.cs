@@ -179,5 +179,15 @@ namespace BABlackBelt
             btnSave.Enabled = true;
         }
 
+        private void ifToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            scintilla1.InsertText("\r\n//_2:\r\nif (/*_2*/ <<<< FIRST CONDITION >>>> /*_*/) {\r\n\r\n} else if (/*_2*/  <<<< FIRST CONDITION >>>> /*_*/) {\r\n\r\n} else {\r\n\r\n}\r\n//__2\r\n");
+        }
+
+        private void mnuExpression_Click(object sender, EventArgs e)
+        {
+            scintilla1.InsertText("//_1: Expression Description\r\n< YOUR CODE HERE>\r\n//__1\r\n");
+        }
+
     }
 }
