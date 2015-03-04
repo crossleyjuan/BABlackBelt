@@ -268,5 +268,11 @@ namespace BABlackBelt
                 txtGitFolder.Text = projectFolder;
             }
         }
+
+        private void xLSTLabToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            XLSTLab lab = new XLSTLab();
+            lab.Show();
+        }
     }
 }

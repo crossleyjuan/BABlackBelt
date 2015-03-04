@@ -49,6 +49,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.xLSTLabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -73,13 +74,13 @@
             this.toolStripMenuItem1,
             this.exitToolStripMenuItem});
             this.connectionToolStripMenuItem.Name = "connectionToolStripMenuItem";
-            this.connectionToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.connectionToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
             this.connectionToolStripMenuItem.Text = "Connection";
             // 
             // connectToolStripMenuItem
             // 
             this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            this.connectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.connectToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.connectToolStripMenuItem.Text = "Connect";
             this.connectToolStripMenuItem.Visible = false;
             this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
@@ -87,27 +88,27 @@
             // disconnectToolStripMenuItem
             // 
             this.disconnectToolStripMenuItem.Name = "disconnectToolStripMenuItem";
-            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.disconnectToolStripMenuItem.Text = "Disconnect";
             this.disconnectToolStripMenuItem.Visible = false;
             // 
             // preferencesToolStripMenuItem
             // 
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.preferencesToolStripMenuItem.Text = "Preferences";
             this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(129, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -116,13 +117,13 @@
             this.gitToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.commitRulesToolStripMenuItem});
             this.gitToolStripMenuItem.Name = "gitToolStripMenuItem";
-            this.gitToolStripMenuItem.Size = new System.Drawing.Size(34, 20);
+            this.gitToolStripMenuItem.Size = new System.Drawing.Size(32, 20);
             this.gitToolStripMenuItem.Text = "Git";
             // 
             // commitRulesToolStripMenuItem
             // 
             this.commitRulesToolStripMenuItem.Name = "commitRulesToolStripMenuItem";
-            this.commitRulesToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.commitRulesToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.commitRulesToolStripMenuItem.Text = "Commit Elements";
             this.commitRulesToolStripMenuItem.Click += new System.EventHandler(this.commitRulesToolStripMenuItem_Click);
             // 
@@ -133,22 +134,23 @@
             this.dBInfoToolStripMenuItem,
             this.testEmailServerToolStripMenuItem,
             this.advancedCompareToolStripMenuItem,
-            this.updateBizagiLogoToolStripMenuItem});
+            this.updateBizagiLogoToolStripMenuItem,
+            this.xLSTLabToolStripMenuItem});
             this.codeToolStripMenuItem.Name = "codeToolStripMenuItem";
-            this.codeToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.codeToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.codeToolStripMenuItem.Text = "Code";
             // 
             // prettifyMyRuleToolStripMenuItem
             // 
             this.prettifyMyRuleToolStripMenuItem.Name = "prettifyMyRuleToolStripMenuItem";
-            this.prettifyMyRuleToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.prettifyMyRuleToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.prettifyMyRuleToolStripMenuItem.Text = "Prettify my rule";
             this.prettifyMyRuleToolStripMenuItem.Click += new System.EventHandler(this.prettifyMyRuleToolStripMenuItem_Click);
             // 
             // dBInfoToolStripMenuItem
             // 
             this.dBInfoToolStripMenuItem.Name = "dBInfoToolStripMenuItem";
-            this.dBInfoToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.dBInfoToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.dBInfoToolStripMenuItem.Text = "DB Info";
             this.dBInfoToolStripMenuItem.Visible = false;
             this.dBInfoToolStripMenuItem.Click += new System.EventHandler(this.dBInfoToolStripMenuItem_Click);
@@ -156,7 +158,7 @@
             // testEmailServerToolStripMenuItem
             // 
             this.testEmailServerToolStripMenuItem.Name = "testEmailServerToolStripMenuItem";
-            this.testEmailServerToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.testEmailServerToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.testEmailServerToolStripMenuItem.Text = "Test Email Server";
             this.testEmailServerToolStripMenuItem.Visible = false;
             this.testEmailServerToolStripMenuItem.Click += new System.EventHandler(this.testEmailServerToolStripMenuItem_Click);
@@ -164,7 +166,7 @@
             // advancedCompareToolStripMenuItem
             // 
             this.advancedCompareToolStripMenuItem.Name = "advancedCompareToolStripMenuItem";
-            this.advancedCompareToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.advancedCompareToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.advancedCompareToolStripMenuItem.Text = "Advanced Compare";
             this.advancedCompareToolStripMenuItem.Visible = false;
             this.advancedCompareToolStripMenuItem.Click += new System.EventHandler(this.advancedCompareToolStripMenuItem_Click);
@@ -172,7 +174,7 @@
             // updateBizagiLogoToolStripMenuItem
             // 
             this.updateBizagiLogoToolStripMenuItem.Name = "updateBizagiLogoToolStripMenuItem";
-            this.updateBizagiLogoToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.updateBizagiLogoToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.updateBizagiLogoToolStripMenuItem.Text = "Update Bizagi Logo";
             this.updateBizagiLogoToolStripMenuItem.Visible = false;
             this.updateBizagiLogoToolStripMenuItem.Click += new System.EventHandler(this.updateBizagiLogoToolStripMenuItem_Click);
@@ -225,6 +227,13 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // xLSTLabToolStripMenuItem
+            // 
+            this.xLSTLabToolStripMenuItem.Name = "xLSTLabToolStripMenuItem";
+            this.xLSTLabToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.xLSTLabToolStripMenuItem.Text = "XLST Lab";
+            this.xLSTLabToolStripMenuItem.Click += new System.EventHandler(this.xLSTLabToolStripMenuItem_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -272,6 +281,7 @@
         private System.Windows.Forms.ToolStripMenuItem advancedCompareToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem updateBizagiLogoToolStripMenuItem;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.ToolStripMenuItem xLSTLabToolStripMenuItem;
     }
 }
 
