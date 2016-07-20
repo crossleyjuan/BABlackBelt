@@ -47,6 +47,7 @@
     <Compile Include="DataConnectionFactory.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="FileUtil.cs" />
+    <Compile Include="FlashWindow.cs" />
     <Compile Include="Git\BAFolderSyncManager.cs" />
     <Compile Include="Git\GitChange.cs" />
     <Compile Include="Git\GitUtil.cs" />

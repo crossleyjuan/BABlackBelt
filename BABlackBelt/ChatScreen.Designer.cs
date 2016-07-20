@@ -98,6 +98,7 @@
             this.Controls.Add(this.panel2);
             this.Name = "ChatScreen";
             this.Text = "ChatScreen";
+            this.Activated += new System.EventHandler(this.ChatScreen_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ChatScreen_FormClosing);
             this.Load += new System.EventHandler(this.ChatScreen_Load);
             this.panel2.ResumeLayout(false);

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -44,14 +44,18 @@ namespace BABlackBelt
             }
             else
             {
-                txtChat.AppendText((string)o);
-                ShowScreen();
+                if (!_ClosingChat)
+                {
+                    txtChat.AppendText((string)o);
+                    ShowScreen();
+                }
             }
         }
 
         public void AddMessage(ServerLib.ChatClient.Message message)
         {
             AddText(string.Format("[{0}]: {1}\r\n", message.From, message.Content));
+            StartFlash();
         }
 
         public void ShowScreen()
@@ -77,6 +81,35 @@ namespace BABlackBelt
                 return;
             }
             Handled = false;
+        }
+
+        private void StartFlash()
+        {
+            if (this.InvokeRequired)
+            {
+                Callback d = new Callback(StartFlash);
+                this.Invoke(d, new object[] { });
+            }
+            else
+            {
+                if (!FlashWindow.WindowHasFocus(this))
+                {
+                    FlashWindow.Start(this);
+                }
+            }
+        }
+
+        private void StopFlash()
+        {
+            if (this.InvokeRequired)
+            {
+                Callback d = new Callback(StopFlash);
+                this.Invoke(d, new object[] { });
+            }
+            else
+            {
+                FlashWindow.Stop(this);
+            }
         }
 
         private void btnSend_Click(object sender, EventArgs e)
@@ -150,17 +183,14 @@ namespace BABlackBelt
 
         void Client_ConnectHandler(ChatClient client)
         {
-            AddText(string.Format("Connected to {0}\r\n",client._server));
+            AddText(string.Format("Connected to {0}\r\n", client._server));
             EnableControls(true);
         }
 
         void Client_CloseHandler(ChatClient client)
         {
-            if (!_ClosingChat)
-            {
-                AddText("Connection to the server lost, retrying in 30 secs\r\n");
-                EnableControls(false);
-            }
+            AddText("Connection to the server lost, retrying in 30 secs\r\n");
+            EnableControls(false);
         }
 
         public void EnableControls(object o)
@@ -196,6 +226,14 @@ namespace BABlackBelt
         {
             _chat = new ChatScreen(UserWorkspace.Workspace().Client);
             return _chat;
+        }
+
+        private void ChatScreen_Activated(object sender, EventArgs e)
+        {
+            if (FlashWindow.WindowHasFocus(this))
+            {
+                StopFlash();
+            }
         }
     }
 }
