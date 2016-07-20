@@ -176,7 +176,7 @@ namespace BABlackBelt
         private void ChatScreen_Load(object sender, EventArgs e)
         {
             txtChat.Text = "/help to list the commands available\r\n";
-            _client.CloseHandler += new ChatClient.ClientCloseHandler(Client_CloseHandler);
+            _client.CloseHandler += Client_CloseHandler;
             _client.ConnectHandler += Client_ConnectHandler;
             _client.ReceiveHandler += MessageReceived;
         }
@@ -218,6 +218,10 @@ namespace BABlackBelt
             else
             {
                 _ClosingChat = true;
+                _client.CloseHandler -= Client_CloseHandler;
+                _client.ConnectHandler -= Client_ConnectHandler;
+                _client.ReceiveHandler -= MessageReceived;
+                _client.Close();
                 Close();
             }
         }

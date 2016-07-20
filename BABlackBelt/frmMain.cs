@@ -255,10 +255,12 @@ namespace BABlackBelt
             {
                 _workspace.SaveWorkspace();
             }
-            _workspace.Client.Close();
+            if (_workspace.Client != null)
+            {
+                _workspace.Client.Close();
+            }
             if (_chat != null) _chat.CloseForm();
             _chat = null;
-            
         }
 
         private void button3_Click(object sender, EventArgs e)
