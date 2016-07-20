@@ -38,6 +38,8 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtConnectionString = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.txtBlackBeltServer = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -90,7 +92,7 @@
             // btnOk
             // 
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(263, 244);
+            this.btnOk.Location = new System.Drawing.Point(367, 275);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(97, 23);
             this.btnOk.TabIndex = 3;
@@ -101,7 +103,7 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(366, 244);
+            this.button1.Location = new System.Drawing.Point(470, 275);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(97, 23);
             this.button1.TabIndex = 4;
@@ -110,11 +112,13 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.txtBlackBeltServer);
+            this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.txtConnectionString);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Location = new System.Drawing.Point(12, 137);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(555, 81);
+            this.groupBox2.Size = new System.Drawing.Size(555, 116);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Project Settings";
@@ -135,11 +139,27 @@
             this.label4.TabIndex = 2;
             this.label4.Text = "Connection String";
             // 
+            // txtBlackBeltServer
+            // 
+            this.txtBlackBeltServer.Location = new System.Drawing.Point(122, 68);
+            this.txtBlackBeltServer.Name = "txtBlackBeltServer";
+            this.txtBlackBeltServer.Size = new System.Drawing.Size(170, 20);
+            this.txtBlackBeltServer.TabIndex = 5;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(16, 68);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(89, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Black Belt Server";
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(579, 279);
+            this.ClientSize = new System.Drawing.Size(579, 331);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.btnOk);
@@ -168,6 +188,8 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox txtConnectionString;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtBlackBeltServer;
+        private System.Windows.Forms.Label label3;
 
     }
 }

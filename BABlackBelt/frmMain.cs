@@ -9,22 +9,21 @@ using System.Windows.Forms;
 using System.IO;
 using System.Configuration;
 using BABlackBelt.Git;
+using ServerLib;
 
 namespace BABlackBelt
 {
     public partial class frmMain : Form
     {
         UserWorkspace _workspace;
+        static ChatScreen _chat;
+
         public frmMain()
         {
             InitializeComponent();
-            _workspace = new UserWorkspace();
-            _workspace.Initialize();
+            _workspace = UserWorkspace.Workspace();
 
-            if (!string.IsNullOrEmpty(_workspace.RecentProject))
-            {
-                txtGitFolder.Text = _workspace.RecentProject;
-            }
+
         }
 
         private void prettifyMyRuleToolStripMenuItem_Click(object sender, EventArgs e)
@@ -116,7 +115,6 @@ namespace BABlackBelt
             string userDir = Path.Combine( FileUtil.GetUserDirectory(), "bbtool.config");
 
             Settings globalSettings = Settings.getSettings();
-            globalSettings.LoadSettings(userDir);
 
             string lastDir = globalSettings["LastDir"];
             if (!string.IsNullOrEmpty(lastDir))
@@ -126,6 +124,19 @@ namespace BABlackBelt
                     txtGitFolder.Text = lastDir;
                 }
             }
+            if (!string.IsNullOrEmpty(txtGitFolder.Text))
+            {
+                if (!UserWorkspace.Workspace().LoadProject(txtGitFolder.Text))
+                {
+                    txtGitFolder.Text = "";
+                }
+            }
+            bool connected = UserWorkspace.Workspace().ConnectBlackBelt();
+
+            _chat = ChatScreen.Create();
+            _chat.EnableControls(connected);
+            _chat.ShowScreen();
+            _chat.Hide();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -144,6 +155,14 @@ namespace BABlackBelt
                 {
                     MessageBox.Show("Selected path is not a git folder");
                 }
+
+                Settings projectSettings = Settings.getProjectSettings(txtGitFolder.Text);
+
+                if (!UserWorkspace.Workspace().LoadProject(txtGitFolder.Text))
+                {
+                    txtGitFolder.Text = "";
+                }
+                UserWorkspace.Workspace().ConnectBlackBelt();
             }
         }
 
@@ -182,8 +201,18 @@ namespace BABlackBelt
 
         private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Settings settings = Settings.getSettings();
+            string blackBeltServer = settings["blackbeltserver"];
             SettingsForm form = new SettingsForm(txtGitFolder.Text);
-            form.ShowDialog();
+            if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                settings = Settings.getSettings();
+                if (settings["blackbeltserver"] != blackBeltServer)
+                {
+                    UserWorkspace.Workspace().ConnectBlackBelt();
+                    _chat.Show();
+                }
+            }
         }
 
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -198,7 +227,6 @@ namespace BABlackBelt
 
         private void testEmailServerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
         }
 
         private void advancedCompareToolStripMenuItem_Click(object sender, EventArgs e)
@@ -227,6 +255,10 @@ namespace BABlackBelt
             {
                 _workspace.SaveWorkspace();
             }
+            _workspace.Client.Close();
+            if (_chat != null) _chat.CloseForm();
+            _chat = null;
+            
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -273,6 +305,37 @@ namespace BABlackBelt
         {
             XLSTLab lab = new XLSTLab();
             lab.Show();
+        }
+
+        private void testUDPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            /*
+            if (string.IsNullOrEmpty(txtGitFolder.Text))
+            {
+                MessageBox.Show("Please load a project first before connecting to the chat application");
+                return;
+            }
+             * */
+            if (UserWorkspace.Workspace().Client == null)
+            {
+                if (UserWorkspace.Workspace().ConnectBlackBelt())
+                {
+                    if (_chat != null)
+                    {
+                        _chat.CloseForm();
+                    }
+                    _chat = ChatScreen.Create();
+                }
+                else
+                {
+                    if (_chat != null) _chat.CloseForm();
+                    _chat = null;
+                }
+            }
+            if (_chat != null)
+            {
+                _chat.ShowScreen();
+            }
         }
     }
 }

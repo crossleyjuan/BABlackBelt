@@ -72,6 +72,14 @@ namespace BABlackBelt.Git
             }
             Directory.CreateDirectory(entitiesFolder);
 
+            string formsFolder = Path.Combine(gitFolder, "Forms");
+            // Always cleanup the previous directory to check for deleted entities (renamed)
+            if (Directory.Exists(formsFolder))
+            {
+                Directory.Delete(formsFolder, true);
+            }
+            Directory.CreateDirectory(formsFolder);
+
         }
 
         private static void RunRulesRefresh(DataConnection con, string folder)
@@ -79,6 +87,10 @@ namespace BABlackBelt.Git
             StatusScreen screen = StatusScreen.ShowStatus(0);
 
             string rulesFolder = Path.Combine(folder, "Rules");
+            if (!Directory.Exists(rulesFolder))
+            {
+                Directory.CreateDirectory(rulesFolder);
+            }
 
             DataTable dtRules = con.RunQuery("SELECT * from Bizrule order by ruleName");
             screen.MaxValue += dtRules.Rows.Count;
@@ -89,6 +101,37 @@ namespace BABlackBelt.Git
                 string ruleFileName = string.Format("{0}.brl", row["ruleName"].ToString());
                 string fileName = Path.Combine(rulesFolder, ruleFileName);
                 string content = (string)row["ruleFormula"];
+                if (content != null)
+                {
+                    byte[] data = System.Text.Encoding.UTF8.GetBytes(content);
+                    FileUtil.SaveFile(fileName, data);
+                }
+                screen.UpdateStatus(current++, "Refreshing: " + fileName);
+            }
+            screen.Close();
+        }
+
+        private static void RunFormsRefresh(DataConnection con, string folder)
+        {
+            StatusScreen screen = StatusScreen.ShowStatus(0);
+
+            string formsFolder = Path.Combine(folder, "Forms");
+            if (!Directory.Exists(formsFolder))
+            {
+                Directory.CreateDirectory(formsFolder);
+            }
+
+            DataTable dtForms = con.RunQuery("SELECT objName, objContent from babizagicatalog where objtype = 52 order by objName");
+            screen.MaxValue += dtForms.Rows.Count;
+
+            int current = 0;
+            foreach (DataRow row in dtForms.Rows)
+            {
+                string formFileName = string.Format("{0}.frm", row["objName"].ToString());
+                formFileName = formFileName.Replace("\r", "");
+                formFileName = formFileName.Replace("\n", "");
+                string fileName = Path.Combine(formsFolder, formFileName);
+                string content = (string)row["objContent"];
                 if (content != null)
                 {
                     byte[] data = System.Text.Encoding.UTF8.GetBytes(content);
@@ -131,6 +174,10 @@ namespace BABlackBelt.Git
             StatusScreen screen = StatusScreen.ShowStatus(0);
 
             string entitiesFolder = Path.Combine(folder, "Entities");
+            if (!Directory.Exists(entitiesFolder))
+            {
+                Directory.CreateDirectory(entitiesFolder);
+            }
 
             DataTable dtRules = con.RunQuery("SELECT * from Entity order by entName");
             screen.MaxValue += dtRules.Rows.Count;
@@ -153,23 +200,24 @@ namespace BABlackBelt.Git
             screen.Close();
         }
 
-        public static void SyncElements(Git.GitUtil gitUtil, string currentBranch, Settings projectSettings, string folder)
+         public static void SyncElements(Git.GitUtil gitUtil, string currentBranch, Settings projectSettings, string folder)
         {
             CleanupFolders(folder);
-            string connectionString = projectSettings["ConnectionString"];
-            DataConnection con = DataConnectionFactory.getConnection(connectionString);
 
-            StatusScreen fullProcessScreen = StatusScreen.ShowStatus(3);
+            DataConnection con = DataConnectionFactory.getConnection(projectSettings);
 
-            gitUtil.Pull("origin", currentBranch);
-            fullProcessScreen.UpdateStatus(1, "Gill pull done!");
+            StatusScreen fullProcessScreen = StatusScreen.ShowStatus(2);
 
             RunRulesRefresh(con, folder);
-            fullProcessScreen.UpdateStatus(2, "Rules updated");
+            fullProcessScreen.UpdateStatus(1, "Rules updated");
 
             RunEntitiesRefresh(con, folder);
-            fullProcessScreen.UpdateStatus(3, "Entities updated");
+            fullProcessScreen.UpdateStatus(2, "Entities updated");
 
+             /*
+            RunFormsRefresh(con, folder);
+            fullProcessScreen.UpdateStatus(3, "Forms updated");
+             */
             fullProcessScreen.Close();
         }
     }

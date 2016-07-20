@@ -22,16 +22,10 @@ namespace BABlackBelt
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             Git.GitUtil git = new Git.GitUtil("");
-            txtFullname.Text = Settings.getSettings()["git_fullname"];
-            if (string.IsNullOrEmpty(txtFullname.Text))
-            {
-                txtFullname.Text = git.GetGlobal("user.name");
-            }
-            txtEmail.Text = Settings.getSettings()["git_email"];
-            if (string.IsNullOrEmpty(txtEmail.Text))
-            {
-                txtEmail.Text = git.GetGlobal("user.email");
-            }
+
+            txtFullname.Text = git.GetGlobal("user.name");
+            txtEmail.Text = git.GetGlobal("user.email");
+            txtBlackBeltServer.Text = _projectSettings["blackbeltserver"];
 
             txtConnectionString.Text = _projectSettings["ConnectionString"];
         }
@@ -42,15 +36,15 @@ namespace BABlackBelt
             git.setGlobal("user.name", txtFullname.Text);
             git.setGlobal("user.email", txtEmail.Text);
 
-            Settings settings = Settings.getSettings();
-            settings["git_fullname"] = txtFullname.Text;
-            settings["git_email"] = txtEmail.Text;
-
-            settings.saveSettings();
-
             _projectSettings["ConnectionString"] = txtConnectionString.Text;
-
+            _projectSettings["blackbeltserver"] = txtBlackBeltServer.Text;
             _projectSettings.saveSettings();
         }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

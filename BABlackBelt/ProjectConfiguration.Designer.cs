@@ -55,6 +55,7 @@
             this.txtGitFolder.Name = "txtGitFolder";
             this.txtGitFolder.Size = new System.Drawing.Size(343, 20);
             this.txtGitFolder.TabIndex = 1;
+            this.txtGitFolder.TextChanged += new System.EventHandler(this.txtGitFolder_TextChanged);
             // 
             // txtProjectFolder
             // 

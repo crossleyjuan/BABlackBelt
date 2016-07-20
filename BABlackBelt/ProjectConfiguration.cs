@@ -76,5 +76,10 @@ namespace BABlackBelt
 
         }
 
+        private void txtGitFolder_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

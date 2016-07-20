@@ -14,10 +14,10 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>\\slk30as0047v\Bizagi_WIP\Software\BABlackBelt\</PublishUrl>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>C:\workspace\bizagi\tools\BABlackBelt\Installer\BB Installer\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Unc</InstallFrom>
+    <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
@@ -25,9 +25,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\slk30as0047v\Bizagi_WIP\Software\BABlackBelt\</InstallUrl>
+    <InstallUrl>http://localhost/BlackBelt/</InstallUrl>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>21</ApplicationRevision>
+    <ApplicationRevision>35</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -53,16 +54,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>EA6BC17108D175B3DEA648825DC872BC1262B118</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>BABlackBelt_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <ManifestCertificateThumbprint>3279F54315C65C2A1A9FE4A3EB6C27FC9A9E6A90</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>BizAgi_logo.ico</ApplicationIcon>
@@ -80,6 +72,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -97,6 +90,10 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ScintillaNET, Version=2.6.0.0, Culture=neutral, PublicKeyToken=948d6c9751444115, processorArchitecture=MSIL">
@@ -116,16 +113,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChatScreen.Designer.cs">
+      <DependentUpon>ChatScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="CommitGIT.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CommitGIT.Designer.cs">
       <DependentUpon>CommitGIT.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataConnection.cs" />
-    <Compile Include="DataConnectionFactory.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="FileUtil.cs" />
     <Compile Include="FindDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,10 +149,6 @@
     <Compile Include="GitResult.Designer.cs">
       <DependentUpon>GitResult.cs</DependentUpon>
     </Compile>
-    <Compile Include="Git\BAFolderSyncManager.cs" />
-    <Compile Include="Git\GitChange.cs" />
-    <Compile Include="Git\GitUtil.cs" />
-    <Compile Include="Git\ProcessUtil.cs" />
     <Compile Include="PrettyfyRule.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -174,27 +169,16 @@
     <Compile Include="SelectObjects.Designer.cs">
       <DependentUpon>SelectObjects.cs</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
-    <Compile Include="SettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SettingsForm.Designer.cs">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StatusScreen.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="StatusScreen.Designer.cs">
-      <DependentUpon>StatusScreen.cs</DependentUpon>
-    </Compile>
     <Compile Include="TemplateUtil.cs" />
-    <Compile Include="UserWorkspace.cs" />
     <Compile Include="XLSTLab.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="XLSTLab.Designer.cs">
       <DependentUpon>XLSTLab.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ChatScreen.resx">
+      <DependentUpon>ChatScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CommitGIT.resx">
       <DependentUpon>CommitGIT.cs</DependentUpon>
     </EmbeddedResource>
@@ -229,17 +213,10 @@
     <EmbeddedResource Include="SelectObjects.resx">
       <DependentUpon>SelectObjects.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SettingsForm.resx">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StatusScreen.resx">
-      <DependentUpon>StatusScreen.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="XLSTLab.resx">
       <DependentUpon>XLSTLab.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
-    <None Include="BABlackBelt_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -279,6 +256,16 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BAUtil\BAUtil.csproj">
+      <Project>{464F372C-256D-40F7-B69C-B405DA9DEB37}</Project>
+      <Name>BAUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServerLib\ServerLib.csproj">
+      <Project>{00D88711-CBC5-4BB8-9F59-C5970F8C8F6C}</Project>
+      <Name>ServerLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

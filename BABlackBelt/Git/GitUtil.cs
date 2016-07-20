@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace BABlackBelt.Git
 {
@@ -18,7 +20,7 @@ namespace BABlackBelt.Git
 
         public List<GitChange> GetStatus()
         {
-            string result = ExecuteGitCommand("status");
+            string result = ExecuteGitCommand("status", "--untracked-files=all");
 
             List<GitChange> changes = parseStatus(result);
 
@@ -80,6 +82,10 @@ namespace BABlackBelt.Git
             return ExecuteGitCommand(command);
         }
 
+        private static Regex Deleted = new Regex("[#]*\tdeleted:[ ]*([a-zA-Z0-9_\\\\\\/]*\\.[a-zA-Z]{3})[\\r]$");
+        private static Regex Modified = new Regex("[#]*\tmodified:[ ]*([a-zA-Z0-9_\\\\\\/]*\\.[a-zA-Z]{3})[\\r]$");
+        private static Regex UntrackedStarts = new Regex("[#]*\t([a-zA-Z0-9_\\\\\\/]*\\.[a-zA-Z]{3})[\\r]$");
+
         private List<GitChange> parseStatus(string status)
         {
             string[] lines = status.Split('\n');
@@ -90,40 +96,44 @@ namespace BABlackBelt.Git
             {
                 if (!untracked)
                 {
-                    if (line.StartsWith("#\tmodified:"))
+                    if (Modified.IsMatch(line))
                     {
                         GitChange change = new GitChange()
                         {
                             ChangeType = "modified"
                         };
-                        string fileName = line.Substring("#	modified:   ".Length);
+                        Group grp = Modified.Match(line).Groups[1];
+                        string fileName = grp.Value;
                         change.File = fileName;
                         result.Add(change);
                     }
-                    else if (line.StartsWith("#\tdeleted:"))
+                    else if (Deleted.IsMatch(line))
                     {
                         GitChange change = new GitChange()
                         {
                             ChangeType = "deleted"
                         };
-                        string fileName = line.Substring("#\tdeleted:    ".Length);
+                        Group grp = Deleted.Match(line).Groups[1];
+                        string fileName = grp.Value;
                         change.File = fileName;
                         result.Add(change);
                     }
-                    else if (line.StartsWith("# Untracked files:"))
+                        
+                    else if (line.IndexOf("Untracked files:") > -1)
                     {
                         untracked = true;
                     }
                 }
                 else
                 {
-                    if (line.StartsWith("#\t"))
+                    if (UntrackedStarts.IsMatch(line))
                     {
+                        Group grp = UntrackedStarts.Match(line).Groups[1];
+                        string fileName = grp.Value;
                         GitChange change = new GitChange()
                         {
                             ChangeType = "new"
                         };
-                        string fileName = line.Substring("#\t".Length);
                         change.File = fileName;
                         result.Add(change);
                     }
@@ -141,12 +151,12 @@ namespace BABlackBelt.Git
 
         }
 
-        public string ExecuteGitCommand(string command)
+        public string ExecuteGitCommand(string command, string args="")
         {
-            return ExecuteGitCommand(command, true);
+            return ExecuteGitCommand(command, true, args);
         }
 
-        public string ExecuteGitCommand(string command, bool wait)
+        public string ExecuteGitCommand(string command, bool wait, string args = "")
         {
             ProcessStartInfo gitInfo = new ProcessStartInfo();
             gitInfo.CreateNoWindow = true;
@@ -156,26 +166,69 @@ namespace BABlackBelt.Git
             gitInfo.FileName = gitFolder + @"\bin\git.exe";
 
             Process gitProcess = new Process();
-            gitInfo.Arguments = command; // such as "fetch orign"
+            gitInfo.Arguments = command + " " + args; // such as "fetch orign"
+            if (!Directory.Exists(_folder))
+            {
+                Directory.CreateDirectory(_folder);
+            }
             gitInfo.WorkingDirectory = _folder;
             gitInfo.UseShellExecute = false;
-
+            gitInfo.RedirectStandardOutput = true;
+            gitInfo.RedirectStandardError = true;
             gitProcess.StartInfo = gitInfo;
-            gitProcess.Start();
 
-            if (wait)
+            StringBuilder output = new StringBuilder();
+            StringBuilder error = new StringBuilder();
+
+            using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+            using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
             {
-                string stdout_str = gitProcess.StandardOutput.ReadToEnd(); // pick up STDOUT
-                string stderr_str = gitProcess.StandardError.ReadToEnd();  // pick up STDERR
+                gitProcess.OutputDataReceived += (sender, e) =>
+                {
+                    if (e.Data == null)
+                    {
+                        outputWaitHandle.Set();
+                    }
+                    else
+                    {
+                        output.AppendLine(e.Data);
+                    }
+                };
+                gitProcess.ErrorDataReceived += (sender, e) =>
+                {
+                    if (e.Data == null)
+                    {
+                        errorWaitHandle.Set();
+                    }
+                    else
+                    {
+                        error.AppendLine(e.Data);
+                    }
+                };
 
-                gitProcess.WaitForExit();
-                gitProcess.Close();
+                gitProcess.Start();
 
-                return stdout_str;
-            }
-            else
-            {
-                return null;
+                gitProcess.BeginOutputReadLine();
+                gitProcess.BeginErrorReadLine();
+
+                int timeout = 5000;
+                if (wait && gitProcess.WaitForExit(timeout) &&
+                        outputWaitHandle.WaitOne(timeout) &&
+                        errorWaitHandle.WaitOne(timeout))
+                {
+
+                    string stdout_str = output.ToString(); // pick up STDOUT
+                    string stderr_str = error.ToString();  // pick up STDERR
+
+                    gitProcess.Close();
+                    outputWaitHandle.Close();
+                    errorWaitHandle.Close();
+                    return stdout_str;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
