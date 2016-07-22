@@ -28,18 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChatScreen));
             this.panel2 = new System.Windows.Forms.Panel();
             this.txtChat = new System.Windows.Forms.TextBox();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.btnRestart = new System.Windows.Forms.ToolStripButton();
+            this.btnCancelRestart = new System.Windows.Forms.ToolStripButton();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel2
             // 
             this.panel2.Controls.Add(this.txtChat);
+            this.panel2.Controls.Add(this.toolStrip1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
@@ -51,14 +57,48 @@
             // 
             this.txtChat.BackColor = System.Drawing.SystemColors.Window;
             this.txtChat.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtChat.Location = new System.Drawing.Point(0, 0);
+            this.txtChat.Location = new System.Drawing.Point(0, 39);
             this.txtChat.Multiline = true;
             this.txtChat.Name = "txtChat";
             this.txtChat.ReadOnly = true;
             this.txtChat.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtChat.Size = new System.Drawing.Size(459, 246);
+            this.txtChat.Size = new System.Drawing.Size(459, 207);
             this.txtChat.TabIndex = 1;
             this.txtChat.TabStop = false;
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnRestart,
+            this.btnCancelRestart});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(459, 39);
+            this.toolStrip1.TabIndex = 2;
+            this.toolStrip1.Text = "toolStrip1";
+            this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
+            // 
+            // btnRestart
+            // 
+            this.btnRestart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnRestart.Image = global::BABlackBelt.Properties.Resources.restart;
+            this.btnRestart.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnRestart.Name = "btnRestart";
+            this.btnRestart.Size = new System.Drawing.Size(36, 36);
+            this.btnRestart.Text = "btnRestart";
+            this.btnRestart.ToolTipText = "Restart Server";
+            this.btnRestart.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // btnCancelRestart
+            // 
+            this.btnCancelRestart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnCancelRestart.Image = global::BABlackBelt.Properties.Resources.cancelrestart;
+            this.btnCancelRestart.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnCancelRestart.Name = "btnCancelRestart";
+            this.btnCancelRestart.Size = new System.Drawing.Size(36, 36);
+            this.btnCancelRestart.Text = "Cancel Restart";
+            this.btnCancelRestart.ToolTipText = "Cancel Restart";
+            this.btnCancelRestart.Click += new System.EventHandler(this.btnCancelRestart_Click);
             // 
             // flowLayoutPanel1
             // 
@@ -77,6 +117,7 @@
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(360, 20);
             this.txtMessage.TabIndex = 5;
+            this.txtMessage.TextChanged += new System.EventHandler(this.txtMessage_TextChanged);
             this.txtMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMessage_KeyDown);
             // 
             // btnSend
@@ -91,18 +132,22 @@
             // 
             // ChatScreen
             // 
+            this.AcceptButton = this.btnSend;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(459, 291);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.panel2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ChatScreen";
-            this.Text = "ChatScreen";
+            this.Text = "Internal Chat";
             this.Activated += new System.EventHandler(this.ChatScreen_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ChatScreen_FormClosing);
             this.Load += new System.EventHandler(this.ChatScreen_Load);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -116,6 +161,9 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.TextBox txtMessage;
         private System.Windows.Forms.Button btnSend;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton btnRestart;
+        private System.Windows.Forms.ToolStripButton btnCancelRestart;
 
     }
 }

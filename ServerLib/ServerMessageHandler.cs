@@ -21,15 +21,7 @@ namespace ServerLib
             }
             if (message.Content.StartsWith("/hello"))
             {
-                string name = message.Content.Substring(7).Trim();
-                client.Id = name;
-
-                ServerLib.ChatClient.Message broadcast = new ServerLib.ChatClient.Message();
-                broadcast.Date = DateTime.Now.ToString();
-                broadcast.From = client.Id;
-                broadcast.Content = "[06] " + client.Id + " has joined the chat room";
-                server.BroadCastMessage(broadcast, client);
-
+                handleHello(server, client, message);
                 return false;
             }
             if (message.Content.StartsWith("/restart"))
@@ -39,8 +31,8 @@ namespace ServerLib
                 restartBroadCast.Date = DateTime.Now.ToString();
                 restartBroadCast.Content = "[01] Restart requested by " + client.Id + ", to cancel send /cancelrestart";
                 server.BroadCastMessage(restartBroadCast);
-                IISReset.Initialize(server, client);
-                IISReset.Instance().Execute();
+                IISReset.Initialize(server);
+                IISReset.Instance().Execute(client);
                 return false;
             }
             if (message.Content.StartsWith("/cancelrestart"))
@@ -48,10 +40,10 @@ namespace ServerLib
                 ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
                 restartBroadCast.From = client.Id;
                 restartBroadCast.Date = DateTime.Now.ToString();
-                restartBroadCast.Content = "[01] Restart has been cancelled by " + client.Id;
+                restartBroadCast.Content = "[04] Restart has been cancelled by " + client.Id;
                 server.BroadCastMessage(restartBroadCast);
-                IISReset.Initialize(server, client);
-                IISReset.Instance().Cancel();
+                IISReset.Initialize(server);
+                IISReset.Instance().Cancel(client);
                 return false;
             }
             if (message.Content.StartsWith("/list"))
@@ -65,6 +57,30 @@ namespace ServerLib
                 return false;
             }
             return true;
+        }
+
+        private static void handleHello(ChatServer server, ChatClient client, ServerLib.ChatClient.Message message)
+        {
+            string name = message.Content.Substring(7).Trim();
+            client.Id = name;
+
+            ServerLib.ChatClient.Message broadcast = new ServerLib.ChatClient.Message();
+            broadcast.Date = DateTime.Now.ToString();
+            broadcast.From = client.Id;
+            broadcast.Content = "[06] " + client.Id + " has joined the chat room";
+            server.BroadCastMessage(broadcast, client);
+
+            // Sends hello back!
+            ServerLib.ChatClient.Message msg = new ServerLib.ChatClient.Message();
+            msg.From = client.Id;
+            msg.Date = DateTime.Now.ToString();
+            msg.Content = "Hello " + client.Id + " good to see you!";
+
+            Sender s = new Sender()
+            {
+                Name = "Server"
+            };
+            client.SendMessage(s, msg);
         }
 
         private static void SendUsersList(ChatServer server, ChatClient client)

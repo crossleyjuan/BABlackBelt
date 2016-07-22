@@ -18,13 +18,14 @@ namespace BABlackBelt
         UserWorkspace _workspace;
         static ChatScreen _chat;
 
+        delegate void AsyncCallback(object o);
+
         public frmMain()
         {
             InitializeComponent();
             _workspace = UserWorkspace.Workspace();
-
-
         }
+
 
         private void prettifyMyRuleToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -131,12 +132,30 @@ namespace BABlackBelt
                     txtGitFolder.Text = "";
                 }
             }
-            bool connected = UserWorkspace.Workspace().ConnectBlackBelt();
+            UserWorkspace.Workspace().ConnectHandler += ConnectHandler;
+            UserWorkspace.Workspace().CloseHandler += CloseHandler;
+            UserWorkspace.Workspace().ReceiveHandler += ReceivedHandler;
 
             _chat = ChatScreen.Create();
-            _chat.EnableControls(connected);
             _chat.ShowScreen();
             _chat.Hide();
+
+            UserWorkspace.Workspace().ConnectBlackBelt();
+
+        }
+
+        private void CloseHandler(object client)
+        {
+            if (this.InvokeRequired)
+            {
+                AsyncCallback d = new AsyncCallback(CloseHandler);
+                this.Invoke(d, new object[] { client });
+            }
+            else
+            {
+                mnuCancelRestart.Enabled = false;
+                mnuRequestRestart.Enabled = false;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -243,6 +262,10 @@ namespace BABlackBelt
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            UserWorkspace.Workspace().ConnectHandler -= ConnectHandler;
+            UserWorkspace.Workspace().CloseHandler -= CloseHandler;
+            UserWorkspace.Workspace().ReceiveHandler -= ReceivedHandler;
+
             string lastProjectUsed = txtGitFolder.Text;
             bool changed = false;
             if (!string.IsNullOrEmpty(lastProjectUsed))
@@ -339,5 +362,67 @@ namespace BABlackBelt
                 _chat.ShowScreen();
             }
         }
+
+        private void EnableCommandControls(object message)
+        {
+            if (this.InvokeRequired)
+            {
+                AsyncCallback d = new AsyncCallback(EnableCommandControls);
+                this.Invoke(d, new object[] { message });
+            }
+            else
+            {
+                if (((string)message).StartsWith("[01]")) // Requested
+                {
+                    mnuCancelRestart.Enabled = true;
+                    mnuRequestRestart.Enabled = false;
+                }
+                else if (((string)message).StartsWith("[02]")) // Started
+                {
+                    mnuCancelRestart.Enabled = false;
+                    mnuRequestRestart.Enabled = false;
+                }
+                else if (((string)message).StartsWith("[03]")) // Completed
+                {
+                    mnuCancelRestart.Enabled = false;
+                    mnuRequestRestart.Enabled = true;
+                }
+                else if (((string)message).StartsWith("[04]")) // Cancelled
+                {
+                    mnuCancelRestart.Enabled = false;
+                    mnuRequestRestart.Enabled = true;
+                }
+            }
+        }
+
+        public void ReceivedHandler(ChatClient client, ServerLib.ChatClient.Message message)
+        {
+            EnableCommandControls(message.Content);
+        }
+
+        private void ConnectHandler(object client)
+        {
+            if (this.InvokeRequired)
+            {
+                AsyncCallback d = new AsyncCallback(ConnectHandler);
+                this.Invoke(d, new object[] { client });
+            }
+            else
+            {
+                mnuRequestRestart.Enabled = true;
+                mnuCancelRestart.Enabled = false;
+            }
+        }
+
+        private void mnuRequestRestart_Click(object sender, EventArgs e)
+        {
+            UserWorkspace.Workspace().SendMessage("/restart");
+        }
+
+        private void mnuCancelRestart_Click(object sender, EventArgs e)
+        {
+            UserWorkspace.Workspace().SendMessage("/cancelrestart");
+        }
+
     }
 }

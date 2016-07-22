@@ -34,9 +34,9 @@
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.disconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testUDPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.testUDPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.commitRulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.codeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,6 +51,9 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.commandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuRequestRestart = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCancelRestart = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,6 +61,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.connectionToolStripMenuItem,
+            this.commandsToolStripMenuItem,
             this.gitToolStripMenuItem,
             this.codeToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -101,6 +105,13 @@
             this.preferencesToolStripMenuItem.Text = "Preferences";
             this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
             // 
+            // testUDPToolStripMenuItem
+            // 
+            this.testUDPToolStripMenuItem.Name = "testUDPToolStripMenuItem";
+            this.testUDPToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.testUDPToolStripMenuItem.Text = "Chat Window";
+            this.testUDPToolStripMenuItem.Click += new System.EventHandler(this.testUDPToolStripMenuItem_Click);
+            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
@@ -113,13 +124,6 @@
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-            // 
-            // testUDPToolStripMenuItem
-            // 
-            this.testUDPToolStripMenuItem.Name = "testUDPToolStripMenuItem";
-            this.testUDPToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.testUDPToolStripMenuItem.Text = "Chat Window";
-            this.testUDPToolStripMenuItem.Click += new System.EventHandler(this.testUDPToolStripMenuItem_Click);
             // 
             // gitToolStripMenuItem
             // 
@@ -243,6 +247,33 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // commandsToolStripMenuItem
+            // 
+            this.commandsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuRequestRestart,
+            this.mnuCancelRestart});
+            this.commandsToolStripMenuItem.Name = "commandsToolStripMenuItem";
+            this.commandsToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.commandsToolStripMenuItem.Text = "&Commands";
+            // 
+            // mnuRequestRestart
+            // 
+            this.mnuRequestRestart.Name = "mnuRequestRestart";
+            this.mnuRequestRestart.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.R)));
+            this.mnuRequestRestart.Size = new System.Drawing.Size(263, 22);
+            this.mnuRequestRestart.Text = "Request Server &Restart";
+            this.mnuRequestRestart.Click += new System.EventHandler(this.mnuRequestRestart_Click);
+            // 
+            // mnuCancelRestart
+            // 
+            this.mnuCancelRestart.Name = "mnuCancelRestart";
+            this.mnuCancelRestart.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.C)));
+            this.mnuCancelRestart.Size = new System.Drawing.Size(263, 22);
+            this.mnuCancelRestart.Text = "&Cancel Restart";
+            this.mnuCancelRestart.Click += new System.EventHandler(this.mnuCancelRestart_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -292,6 +323,9 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.ToolStripMenuItem xLSTLabToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testUDPToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem commandsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuRequestRestart;
+        private System.Windows.Forms.ToolStripMenuItem mnuCancelRestart;
     }
 }
 

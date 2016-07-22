@@ -15,6 +15,14 @@ namespace BABlackBelt
         private static UserWorkspace _instance;
         private ChatClient _client;
 
+        public delegate void MessageReceivedHandler(ChatClient client, ServerLib.ChatClient.Message message);
+        public delegate void ClientCloseHandler(object client);
+        public delegate void ClientConnectedHandler(object client);
+
+        public event MessageReceivedHandler ReceiveHandler;
+        public event ClientCloseHandler CloseHandler;
+        public event ClientConnectedHandler ConnectHandler;
+
         private UserWorkspace()
         {
         }
@@ -160,13 +168,14 @@ namespace BABlackBelt
             return true;
         }
 
-        public void Connected(ChatClient client)
+        public void Client_Connected(ChatClient client)
         {
             if (string.IsNullOrEmpty(UserWorkspace.Workspace().ChatUser))
             {
                 UserWorkspace.Workspace().ChatUser = "NoName";
             }
             client.ChangeNick(UserWorkspace.Workspace().ChatUser);
+            if (ConnectHandler != null) ConnectHandler(client);
         }
 
         public bool ConnectBlackBelt()
@@ -186,9 +195,9 @@ namespace BABlackBelt
             try
             {
                 _client = new ChatClient(settings["blackbeltserver"], 9000);
-                _client.ConnectHandler += Connected;
-                _client.CloseHandler += new ChatClient.ClientCloseHandler(Client_CloseHandler);
-                _client.ConnectHandler += Client_ConnectHandler;
+                _client.ConnectHandler += Client_Connected;
+                _client.CloseHandler += Client_CloseHandler;
+                _client.ReceiveHandler += Client_ReceiveMessage;
                 _client.Connect();
 
             }
@@ -200,13 +209,42 @@ namespace BABlackBelt
             return true;
         }
 
-        void Client_ConnectHandler(ChatClient client)
+        private void Client_ReceiveMessage(ChatClient client, ChatClient.Message message)
         {
+            if (ReceiveHandler != null) ReceiveHandler(client, message);
         }
 
         void Client_CloseHandler(ChatClient client)
         {
             _client = null;
+            if (CloseHandler != null) CloseHandler(client);
         }
+
+        public ChatClient.Message SendMessage(string sMessage)
+        {
+            ServerLib.ChatClient.Message message = new ChatClient.Message();
+            if (!string.IsNullOrEmpty(ChatUser))
+            {
+                message.From = ChatUser;
+            }
+            else
+            {
+                message.From = _client.Id;
+            }
+            message.Date = DateTime.Now.ToString();
+            message.Content = sMessage;
+            Sender s = new Sender()
+            {
+                Name = "Me"
+            };
+            _client.SendMessage(s, message);
+            if (sMessage.StartsWith("/hello "))
+            {
+                ChatUser = sMessage.Substring(7).Trim();
+                SaveWorkspace();
+            }
+            return message;
+        }
+
     }
 }

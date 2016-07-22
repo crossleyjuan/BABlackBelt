@@ -37,11 +37,11 @@ namespace ServerLib
 
         CustomTimer _timer;
 
-        public static void Initialize(ChatServer server, ChatClient client)
+        public static void Initialize(ChatServer server)
         {
             if (_instance == null)
             {
-                _instance = new IISReset(server, client);
+                _instance = new IISReset(server);
             }
         }
 
@@ -54,13 +54,11 @@ namespace ServerLib
             return _instance;
         }
 
-        private IISReset(ChatServer server, ChatClient client)
+        private IISReset(ChatServer server)
         {
-            _client = client;
+            _client = null;
             _server = server;
             _runningIISRestart = false;
-            _timer = new CustomTimer(server, client, 30000);
-            _timer.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
         }
 
         static void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -118,16 +116,22 @@ namespace ServerLib
             _runningIISRestart = false;
         }
 
-        public void Execute()
+        public void Execute(ChatClient client)
         {
+            _timer = new CustomTimer(_server, client, 30000);
+            _timer.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
             _timer.Enabled = true;
             _timer.Start();
         }
 
-        public void Cancel()
+        public void Cancel(ChatClient client)
         {
-            _timer.Enabled = false;
-            _timer.Stop();
+            if (_timer != null)
+            {
+                _timer.Enabled = false;
+                _timer.Stop();
+            }
+            _timer = null;
         }
     }
 }

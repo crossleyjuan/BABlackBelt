@@ -216,7 +216,9 @@
     <EmbeddedResource Include="XLSTLab.resx">
       <DependentUpon>XLSTLab.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -229,6 +231,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BizAgi_logo.ico" />
+    <None Include="Images\restart.png" />
+    <None Include="Images\cancelrestart.png" />
     <Content Include="SciLexer.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

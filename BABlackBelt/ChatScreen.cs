@@ -12,14 +12,12 @@ namespace BABlackBelt
 {
     public partial class ChatScreen : Form
     {
-        private ChatClient _client;
         private bool _ClosingChat;
         private static ChatScreen _chat;
 
-        private ChatScreen(ChatClient client)
+        private ChatScreen()
         {
             InitializeComponent();
-            _client = client;
             _ClosingChat = false;
         }
 
@@ -32,6 +30,7 @@ namespace BABlackBelt
             if (!message.Content.StartsWith("[08]"))
             {
                 _chat.AddMessage(message);
+                _chat.EnableCommands(message.Content);
             }
         }
 
@@ -120,33 +119,13 @@ namespace BABlackBelt
             {
                 return;
             }
-            ServerLib.ChatClient.Message message = new ChatClient.Message();
-            if (!string.IsNullOrEmpty(UserWorkspace.Workspace().ChatUser))
-            {
-                message.From = UserWorkspace.Workspace().ChatUser;
-            }
-            else
-            {
-                message.From = _client.Id;
-            }
-            message.Date = DateTime.Now.ToString();
-            message.Content = txtMessage.Text;
-            Sender s = new Sender()
-            {
-                Name = "Me"
-            };
-            _client.SendMessage(s, message);
+            string sMessage = txtMessage.Text;
+
+            ServerLib.ChatClient.Message message = UserWorkspace.Workspace().SendMessage(sMessage);
+
             if (!txtMessage.Text.StartsWith("/"))
             {
                 AddMessage(message);
-            }
-            else
-            {
-                if (txtMessage.Text.StartsWith("/hello "))
-                {
-                    UserWorkspace.Workspace().ChatUser = txtMessage.Text.Substring(7).Trim();
-                    UserWorkspace.Workspace().SaveWorkspace();
-                }
             }
             txtMessage.Text = "";
         }
@@ -158,44 +137,48 @@ namespace BABlackBelt
                 e.Cancel = true;
                 Hide();
             }
-            else
-            {
-                _client.Close();
-            }
         }
 
         private void txtMessage_KeyDown(object sender, KeyEventArgs e)
         {
+            /*
             if (e.KeyCode == Keys.Enter)
             {
                 btnSend_Click(sender, e);
                 e.Handled = true;
             }
+             * */
         }
 
         private void ChatScreen_Load(object sender, EventArgs e)
         {
             txtChat.Text = "/help to list the commands available\r\n";
-            _client.CloseHandler += Client_CloseHandler;
-            _client.ConnectHandler += Client_ConnectHandler;
-            _client.ReceiveHandler += MessageReceived;
+            btnRestart.Enabled = false;
+            btnCancelRestart.Enabled = false;
+            UserWorkspace.Workspace().CloseHandler += Client_CloseHandler;
+            UserWorkspace.Workspace().ConnectHandler += Client_ConnectHandler;
+            UserWorkspace.Workspace().ReceiveHandler += MessageReceived;
         }
 
-        void Client_ConnectHandler(ChatClient client)
+        void Client_ConnectHandler(object client)
         {
-            AddText(string.Format("Connected to {0}\r\n", client._server));
+            AddText(string.Format("Connected to {0}\r\n", ((ChatClient)client).Server));
             EnableControls(true);
+            btnRestart.Enabled = true;
+            btnCancelRestart.Enabled = false;
         }
 
-        void Client_CloseHandler(ChatClient client)
+        void Client_CloseHandler(object client)
         {
             AddText("Connection to the server lost, retrying in 30 secs\r\n");
             EnableControls(false);
+            btnRestart.Enabled = false;
+            btnCancelRestart.Enabled = true;
         }
 
         public void EnableControls(object o)
         {
-            if (this.txtChat.InvokeRequired)
+            if (this.InvokeRequired)
             {
                 AsyncCallback d = new AsyncCallback(EnableControls);
                 this.Invoke(d, new object[] { o });
@@ -205,6 +188,38 @@ namespace BABlackBelt
                 txtMessage.Enabled = (bool)o;
                 btnSend.Enabled = (bool)o;
                 txtChat.Enabled = (bool)o;
+            }
+        }
+
+        public void EnableCommands(object message)
+        {
+            if (this.InvokeRequired)
+            {
+                AsyncCallback d = new AsyncCallback(EnableCommands);
+                this.Invoke(d, new object[] { message });
+            }
+            else
+            {
+                if (((string)message).StartsWith("[01]")) // Requested
+                {
+                    btnCancelRestart.Enabled = true;
+                    btnRestart.Enabled = false;
+                }
+                else if (((string)message).StartsWith("[02]")) // Started
+                {
+                    btnCancelRestart.Enabled = false;
+                    btnRestart.Enabled = false;
+                }
+                else if (((string)message).StartsWith("[03]")) // Completed
+                {
+                    btnCancelRestart.Enabled = false;
+                    btnRestart.Enabled = true;
+                }
+                else if (((string)message).StartsWith("[04]")) // Cancelled
+                {
+                    btnCancelRestart.Enabled = false;
+                    btnRestart.Enabled = true;
+                }
             }
         }
 
@@ -218,17 +233,16 @@ namespace BABlackBelt
             else
             {
                 _ClosingChat = true;
-                _client.CloseHandler -= Client_CloseHandler;
-                _client.ConnectHandler -= Client_ConnectHandler;
-                _client.ReceiveHandler -= MessageReceived;
-                _client.Close();
+                UserWorkspace.Workspace().CloseHandler -= Client_CloseHandler;
+                UserWorkspace.Workspace().ConnectHandler -= Client_ConnectHandler;
+                UserWorkspace.Workspace().ReceiveHandler -= MessageReceived;
                 Close();
             }
         }
 
         internal static ChatScreen Create()
         {
-            _chat = new ChatScreen(UserWorkspace.Workspace().Client);
+            _chat = new ChatScreen();
             return _chat;
         }
 
@@ -238,6 +252,31 @@ namespace BABlackBelt
             {
                 StopFlash();
             }
+        }
+
+        private void toolStripLabel1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            UserWorkspace.Workspace().SendMessage("/restart");
+        }
+
+        private void btnCancelRestart_Click(object sender, EventArgs e)
+        {
+            UserWorkspace.Workspace().SendMessage("/cancelrestart");
+        }
+
+        private void txtMessage_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

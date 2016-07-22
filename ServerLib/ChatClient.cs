@@ -21,7 +21,27 @@ namespace ServerLib
         public event ClientConnectedHandler ConnectHandler;
 
         private TcpClient _client;
-        private Timer _pingTimer;
+
+        private class InternalTimer : System.Timers.Timer
+        {
+            private object _context;
+            public delegate void OnTimer(object context, System.Timers.ElapsedEventArgs e);
+            public event OnTimer ElapsedTimer;
+
+            public InternalTimer(object context, double interval):
+                base(interval)
+            {
+                _context = context;
+                Elapsed += OnElapsedTimer;
+            }
+
+            private void OnElapsedTimer(object sender, System.Timers.ElapsedEventArgs e)
+            {
+                ElapsedTimer(_context, e);
+            }
+        };
+
+        private InternalTimer _pingTimer;
         private PINGSTATUS _pingStatus;
         private bool _Closing;
         private enum PINGSTATUS
@@ -47,8 +67,8 @@ namespace ServerLib
         public ChatClient(string server, int port)
         {
             _client = null;
-            _server = server;
-            _port = port;
+            Server = server;
+            Port = port;
         }
 
         internal ChatClient(TcpClient client)
@@ -56,9 +76,9 @@ namespace ServerLib
             this._client = client;
         }
 
-        public static void PingTimerCallback(object state)
+        private void OnTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            ChatClient client = (ChatClient)state;
+            ChatClient client = (ChatClient)sender;
             if (client._pingStatus == PINGSTATUS.NONE)
             {
                 try
@@ -89,13 +109,15 @@ namespace ServerLib
                 // Reset and wait for the next ping
                 client._pingStatus = PINGSTATUS.NONE;
             }
+            // restarts the timer
+            _pingTimer.Start();
         }
 
         public void Connect()
         {
             _client = new TcpClient();
             IPAddress ipAddress = null;
-            IPAddress[] addresses = Dns.GetHostEntry(_server).AddressList;
+            IPAddress[] addresses = Dns.GetHostEntry(Server).AddressList;
             for (var x = 0; x < addresses.Length; x++)
             {
                 if (!addresses[x].IsIPv6LinkLocal && (addresses[x].AddressFamily == AddressFamily.InterNetwork))
@@ -113,8 +135,10 @@ namespace ServerLib
                     _pingTimer.Dispose();
                     _pingTimer = null;
                 }
-                _pingTimer = new Timer(PingTimerCallback, this, 30000, 30000);
-                _client.Connect(ipAddress, _port);
+                _pingTimer = new InternalTimer(this, 30000);
+                _pingTimer.ElapsedTimer += OnTimerElapsed;
+                _pingTimer.Start();
+                _client.Connect(ipAddress, Port);
                 Id = _client.Client.RemoteEndPoint.ToString();
                 WaitMessage();
 
@@ -134,6 +158,7 @@ namespace ServerLib
             message.Content = content;
             return message;
         }
+
         public void ChangeNick(string nick)
         {
             ServerLib.ChatClient.Message message = new ChatClient.Message();
@@ -177,11 +202,12 @@ namespace ServerLib
                 while ((read = stream.Read(buffer, 0, 1024)) > 0)
                 {
                     sbMessage.Append(UTF8Encoding.UTF8.GetString(buffer, 0, read));
-                    if (sbMessage.ToString().EndsWith("<EOF>"))
+                    string[] smessages = sbMessage.ToString().Split(new string[] { "<EOF>" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string smesssage in smessages)
                     {
                         if (ReceiveHandler != null)
                         {
-                            Message message = ParseMessage(sbMessage.ToString());
+                            Message message = ParseMessage(smesssage);
 
                             if (!message.Content.StartsWith("[08]"))
                             {
@@ -196,8 +222,9 @@ namespace ServerLib
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 if (!_Closing && (CloseHandler != null))
                 {
                     CloseHandler(this);
@@ -244,7 +271,9 @@ namespace ServerLib
         public void Close()
         {
             _Closing = true;
-            _client.Close();
+            if (_pingTimer != null) _pingTimer.Stop();
+            _pingTimer = null;
+            if (_client != null) _client.Close();
             _Closing = false;
         }
 
@@ -253,8 +282,8 @@ namespace ServerLib
             return _client.Connected;
         }
 
-        public string _server { get; set; }
+        public string Server { get; set; }
 
-        public int _port { get; set; }
+        public int Port { get; set; }
     }
 }
