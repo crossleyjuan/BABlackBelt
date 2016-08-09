@@ -5,6 +5,20 @@ using System.Text;
 
 namespace ServerLib
 {
+    /// <summary>
+    /// [01] /restart requested
+    /// [02] /restart started
+    /// [03] /restart completed
+    /// [04] /restart cancelled
+    /// [05] User left the chat
+    /// [06] User joined the chat
+    /// [07] Users List
+    /// [08] Ping
+    /// [09] Check Available commands (internal usage porcelain)
+    /// [10] Error
+    /// [11] Command executed
+    /// [12] Check Available commands (user readable)
+    /// </summary>
     public class ServerMessageHandler
     {
         public static bool ProcessMessage(ChatServer server, ChatClient client, ServerLib.ChatClient.Message message)
@@ -26,24 +40,17 @@ namespace ServerLib
             }
             if (message.Content.StartsWith("/restart"))
             {
-                ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
-                restartBroadCast.From = client.Id;
-                restartBroadCast.Date = DateTime.Now.ToString();
-                restartBroadCast.Content = "[01] Restart requested by " + client.Id + ", to cancel send /cancelrestart";
-                server.BroadCastMessage(restartBroadCast);
-                IISReset.Initialize(server);
-                IISReset.Instance().Execute(client);
+                AsyncController.ExecuteCommand(server, client, message);
+                return false;
+            }
+            if (message.Content.StartsWith("/commands"))
+            {
+                handleCommands(server, client, message);
                 return false;
             }
             if (message.Content.StartsWith("/cancelrestart"))
             {
-                ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
-                restartBroadCast.From = client.Id;
-                restartBroadCast.Date = DateTime.Now.ToString();
-                restartBroadCast.Content = "[04] Restart has been cancelled by " + client.Id;
-                server.BroadCastMessage(restartBroadCast);
-                IISReset.Initialize(server);
-                IISReset.Instance().Cancel(client);
+                AsyncController.CancelCommand("restart", client);
                 return false;
             }
             if (message.Content.StartsWith("/list"))
@@ -56,7 +63,53 @@ namespace ServerLib
                 SendPingBack(server, client);
                 return false;
             }
+            if (message.Content.StartsWith("/command"))
+            {
+                ProcessCommand(message, server, client);
+                return false;
+            }
+            if (!message.Content.StartsWith("/cancelrestart") 
+                && message.Content.StartsWith("/cancel"))
+            {
+                string cmdText = message.Content.Substring("/cancel".Length).Trim();
+                AsyncController.CancelCommand(cmdText, client);
+                return false;
+            }
             return true;
+        }
+
+        private static void ProcessCommand(ChatClient.Message message, ChatServer server, ChatClient client)
+        {
+            AsyncController.ExecuteCommand(server, client, message);
+        }
+
+        private static void handleCommands(ChatServer server, ChatClient client, ChatClient.Message message)
+        {
+            ServerLib.ChatClient.Message msg = new ServerLib.ChatClient.Message();
+            msg.From = client.Id;
+            msg.Date = DateTime.Now.ToString();
+            Dictionary<string, Command> commands = AsyncController.Commands;
+
+            bool porcelain = (message.Content.IndexOf("porcelain") > -1);
+            if (!porcelain)
+            {
+                msg.Content = "[12] Available Commands:";
+                foreach (Command c in commands.Values)
+                {
+                    msg.Content += "\r\n" + c.Key + "\t\t" + c.Text;
+                }
+            }
+            else
+            {
+                msg.Content = "[09:";
+                msg.Content += Command.Serialize(commands.Values.ToList<Command>());
+                msg.Content += "]";
+            }
+            Sender s = new Sender()
+            {
+                Name = "Server"
+            };
+            client.SendMessage(s, msg);
         }
 
         private static void handleHello(ChatServer server, ChatClient client, ServerLib.ChatClient.Message message)

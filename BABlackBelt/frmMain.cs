@@ -17,6 +17,8 @@ namespace BABlackBelt
     {
         UserWorkspace _workspace;
         static ChatScreen _chat;
+        List<ToolStripMenuItem> _mnuExecuteItems = new List<ToolStripMenuItem>();
+        List<ToolStripMenuItem> _mnuCancelItems = new List<ToolStripMenuItem>();
 
         delegate void AsyncCallback(object o);
 
@@ -153,8 +155,7 @@ namespace BABlackBelt
             }
             else
             {
-                mnuCancelRestart.Enabled = false;
-                mnuRequestRestart.Enabled = false;
+                UpdateCommandStatus("[99:closed]");
             }
         }
 
@@ -363,6 +364,98 @@ namespace BABlackBelt
             }
         }
 
+        public void EnableCommands(object message)
+        {
+            if (this.InvokeRequired)
+            {
+                AsyncCallback d = new AsyncCallback(EnableCommands);
+                this.Invoke(d, new object[] { message });
+            }
+            else
+            {
+                if (((string)message).StartsWith("[01")) // Requested
+                {
+                    UpdateCommandStatus((string)message);
+                }
+                else if (((string)message).StartsWith("[02")) // Started
+                {
+                    UpdateCommandStatus((string)message);
+                }
+                else if (((string)message).StartsWith("[03")) // Completed
+                {
+                    UpdateCommandStatus((string)message);
+                }
+                else if (((string)message).StartsWith("[04")) // Cancelled
+                {
+                    UpdateCommandStatus((string)message);
+                }
+                else if (((string)message).StartsWith("[09")) // Available Commands
+                {
+                    LoadCommands((string)message);
+                }
+            }
+        }
+
+        private void UpdateCommandStatus(string message)
+        {
+            string ev = message.Substring(1, message.IndexOf(":") - 1);
+            string command = message.Substring(message.IndexOf(":") + 1);
+            command = command.Substring(0, command.IndexOf("]"));
+
+            ToolStripMenuItem executeItem = null;
+            ToolStripMenuItem cancelItem = null;
+            foreach (ToolStripMenuItem item in _mnuExecuteItems)
+            {
+                if (item.Tag.ToString() == command)
+                {
+                    executeItem = item;
+                    break;
+                }
+            }
+            foreach (ToolStripMenuItem item in _mnuCancelItems)
+            {
+                if (item.Tag.ToString() == command)
+                {
+                    cancelItem = item;
+                    break;
+                }
+            }
+            if ((cancelItem != null) && (executeItem != null))
+            {
+                switch (ev)
+                {
+                    case "01": // requested
+                        cancelItem.Enabled = true;
+                        executeItem.Enabled = false;
+                        break;
+                    case "02": // Started
+                        cancelItem.Enabled = false;
+                        executeItem.Enabled = false;
+                        break;
+                    case "03": // Completed
+                    case "04": // Cancelled
+                        cancelItem.Enabled = false;
+                        executeItem.Enabled = true;
+                        break;
+                    case "99":
+                            cancelItem.Enabled = false;
+                        if (command == "connected")
+                        {
+                            executeItem.Enabled = true;
+                        }
+                        else if (command == "closed")
+                        {
+                            executeItem.Enabled = false;
+                        }
+                        break;
+                    default:
+                        cancelItem.Enabled = false;
+                        executeItem.Enabled = true;
+                        break;
+                }
+            }
+        }
+
         private void EnableCommandControls(object message)
         {
             if (this.InvokeRequired)
@@ -372,26 +465,74 @@ namespace BABlackBelt
             }
             else
             {
-                if (((string)message).StartsWith("[01]")) // Requested
+                if (((string)message).StartsWith("[01")) // Requested
                 {
-                    mnuCancelRestart.Enabled = true;
-                    mnuRequestRestart.Enabled = false;
+                    UpdateCommandStatus((string)message);
                 }
-                else if (((string)message).StartsWith("[02]")) // Started
+                else if (((string)message).StartsWith("[02")) // Started
                 {
-                    mnuCancelRestart.Enabled = false;
-                    mnuRequestRestart.Enabled = false;
+                    UpdateCommandStatus((string)message);
                 }
-                else if (((string)message).StartsWith("[03]")) // Completed
+                else if (((string)message).StartsWith("[03")) // Completed
                 {
-                    mnuCancelRestart.Enabled = false;
-                    mnuRequestRestart.Enabled = true;
+                    UpdateCommandStatus((string)message);
                 }
-                else if (((string)message).StartsWith("[04]")) // Cancelled
+                else if (((string)message).StartsWith("[04")) // Cancelled
                 {
-                    mnuCancelRestart.Enabled = false;
-                    mnuRequestRestart.Enabled = true;
+                    UpdateCommandStatus((string)message);
                 }
+                else if (((string)message).StartsWith("[99")) // Internal Commands
+                {
+                    UpdateCommandStatus((string)message);
+                }
+                else if (((string)message).StartsWith("[09")) // Available Commands
+                {
+                    LoadCommands((string)message);
+                }
+            }
+        }
+
+        private void LoadCommands(string messageAvailableCommands)
+        {
+            List<Command> cmds = Command.ParseCommands(messageAvailableCommands);
+            commandsToolStripMenuItem.DropDownItems.Clear();
+            _mnuCancelItems.Clear();
+            _mnuExecuteItems.Clear();
+
+            foreach (Command cmd in cmds)
+            {
+                ToolStripMenuItem item = new ToolStripMenuItem("Execute " + cmd.Text);
+                item.Tag = cmd.Key;
+                item.Click += OnExecuteCommand_Click;
+                item.Enabled = true;
+                commandsToolStripMenuItem.DropDownItems.Add(item);
+                _mnuExecuteItems.Add(item);
+                ToolStripMenuItem itemCancel = new ToolStripMenuItem("Cancel " + cmd.Text);
+                itemCancel.Tag = cmd.Key;
+                itemCancel.Click += OnCancelCommand_Click;
+                itemCancel.Enabled = false;
+                commandsToolStripMenuItem.DropDownItems.Add(itemCancel);
+                _mnuCancelItems.Add(itemCancel);
+            }
+        }
+
+        private void OnCancelCommand_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = sender as ToolStripMenuItem;
+            if (item != null)
+            {
+                string command = (string)item.Tag;
+                UserWorkspace.Workspace().SendMessage("/cancel " + command);
+            }
+        }
+
+        private void OnExecuteCommand_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = sender as ToolStripMenuItem;
+            if (item != null)
+            {
+                string command = (string)item.Tag;
+                UserWorkspace.Workspace().SendMessage("/command " + command);
             }
         }
 
@@ -409,19 +550,8 @@ namespace BABlackBelt
             }
             else
             {
-                mnuRequestRestart.Enabled = true;
-                mnuCancelRestart.Enabled = false;
+                UpdateCommandStatus("[99:connected]");
             }
-        }
-
-        private void mnuRequestRestart_Click(object sender, EventArgs e)
-        {
-            UserWorkspace.Workspace().SendMessage("/restart");
-        }
-
-        private void mnuCancelRestart_Click(object sender, EventArgs e)
-        {
-            UserWorkspace.Workspace().SendMessage("/cancelrestart");
         }
 
     }

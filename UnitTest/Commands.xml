@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Commands>
+  <Command>
+    <key>stop</key>
+    <script>iisreset /stop</script>
+  </Command>
+  <Command>
+    <key>stopphoenix</key>
+    <script>iisreset /stop</script>
+  </Command>
+</Commands>

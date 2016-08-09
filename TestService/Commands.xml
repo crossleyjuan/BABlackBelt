@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Commands>
+  <Command>
+    <text>Restart</text>
+    <key>restart</key>
+    <script>iisreset</script>
+    <arguments>/restart</arguments>
+  </Command>
+  <Command>
+    <text>Stop IIS</text>
+    <key>stop</key>
+    <script>iisreset</script>
+    <arguments>/stop</arguments>
+  </Command>
+  <Command>
+    <text>Stop PHOENIX Server</text>
+    <key>stopphoenix</key>
+    <script>iisreset</script>
+  </Command>
+</Commands>

@@ -27,11 +27,11 @@ namespace BABlackBelt
 
         public static void MessageReceived(ChatClient client, ServerLib.ChatClient.Message message)
         {
-            if (!message.Content.StartsWith("[08]"))
+            if (!message.Content.StartsWith("[08]") && !message.Content.StartsWith("[09]"))
             {
                 _chat.AddMessage(message);
-                _chat.EnableCommands(message.Content);
             }
+            _chat.EnableCommands(message.Content);
         }
 
         public void AddText(object o)
@@ -53,8 +53,19 @@ namespace BABlackBelt
 
         public void AddMessage(ServerLib.ChatClient.Message message)
         {
-            AddText(string.Format("[{0}]: {1}\r\n", message.From, message.Content));
-            StartFlash();
+            string content = message.Content;
+            if (content.StartsWith("["))
+            {
+                if (content.IndexOf("]") > -1)
+                {
+                    content = content.Substring(content.IndexOf("]") + 1);
+                }
+            }
+            if (!string.IsNullOrEmpty(content))
+            {
+                AddText(string.Format("[{0}]: {1}\r\n", message.From, content));
+                StartFlash();
+            }
         }
 
         public void ShowScreen()
@@ -153,27 +164,78 @@ namespace BABlackBelt
         private void ChatScreen_Load(object sender, EventArgs e)
         {
             txtChat.Text = "/help to list the commands available\r\n";
-            btnRestart.Enabled = false;
-            btnCancelRestart.Enabled = false;
             UserWorkspace.Workspace().CloseHandler += Client_CloseHandler;
             UserWorkspace.Workspace().ConnectHandler += Client_ConnectHandler;
             UserWorkspace.Workspace().ReceiveHandler += MessageReceived;
         }
 
+        private void LoadCommands(string messageAvailableCommands)
+        {
+            List<Command> cmds = Command.ParseCommands(messageAvailableCommands);
+            ExecuteDropDown.DropDownItems.Clear();
+            CancelDropDown.DropDownItems.Clear();
+
+            foreach (Command cmd in cmds) { 
+                ToolStripMenuItem item = new ToolStripMenuItem("Execute " + cmd.Text);
+                item.Tag = cmd.Key;
+                item.Click += OnExecuteCommand_Click;
+                item.Enabled = true;
+                ExecuteDropDown.DropDownItems.Add(item);
+                ToolStripMenuItem itemCancel = new ToolStripMenuItem("Cancel " + cmd.Text);
+                itemCancel.Tag = cmd.Key;
+                itemCancel.Click += OnCancelCommand_Click;
+                itemCancel.Enabled = false;
+                CancelDropDown.DropDownItems.Add(itemCancel);
+            }
+        }
+
+        private void OnCancelCommand_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = sender as ToolStripMenuItem;
+            if (item != null)
+            {
+                string command = (string)item.Tag;
+                UserWorkspace.Workspace().SendMessage("/cancel " + command);
+            }
+        }
+
+        private void OnExecuteCommand_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = sender as ToolStripMenuItem;
+            if (item != null)
+            {
+                string command = (string)item.Tag;
+                UserWorkspace.Workspace().SendMessage("/command " + command);
+            }
+        }
+
         void Client_ConnectHandler(object client)
         {
-            AddText(string.Format("Connected to {0}\r\n", ((ChatClient)client).Server));
-            EnableControls(true);
-            btnRestart.Enabled = true;
-            btnCancelRestart.Enabled = false;
+            if (this.InvokeRequired)
+            {
+                AsyncCallback d = new AsyncCallback(Client_ConnectHandler);
+                this.Invoke(d, new object[] { client });
+            }
+            else
+            {
+                AddText(string.Format("Connected to {0}\r\n", ((ChatClient)client).Server));
+                EnableControls(true);
+                UserWorkspace.Workspace().SendMessage("/commands porcelain");
+            }
         }
 
         void Client_CloseHandler(object client)
         {
-            AddText("Connection to the server lost, retrying in 30 secs\r\n");
-            EnableControls(false);
-            btnRestart.Enabled = false;
-            btnCancelRestart.Enabled = true;
+            if (this.InvokeRequired)
+            {
+                AsyncCallback d = new AsyncCallback(Client_CloseHandler);
+                this.Invoke(d, new object[] { client });
+            }
+            else
+            {
+                AddText("Connection to the server lost, retrying in 30 secs\r\n");
+                EnableControls(false);
+            }
         }
 
         public void EnableControls(object o)
@@ -200,25 +262,74 @@ namespace BABlackBelt
             }
             else
             {
-                if (((string)message).StartsWith("[01]")) // Requested
+                if (((string)message).StartsWith("[01")) // Requested
                 {
-                    btnCancelRestart.Enabled = true;
-                    btnRestart.Enabled = false;
+                    UpdateCommandStatus((string)message);
                 }
-                else if (((string)message).StartsWith("[02]")) // Started
+                else if (((string)message).StartsWith("[02")) // Started
                 {
-                    btnCancelRestart.Enabled = false;
-                    btnRestart.Enabled = false;
+                    UpdateCommandStatus((string)message);
                 }
-                else if (((string)message).StartsWith("[03]")) // Completed
+                else if (((string)message).StartsWith("[03")) // Completed
                 {
-                    btnCancelRestart.Enabled = false;
-                    btnRestart.Enabled = true;
+                    UpdateCommandStatus((string)message);
                 }
-                else if (((string)message).StartsWith("[04]")) // Cancelled
+                else if (((string)message).StartsWith("[04")) // Cancelled
                 {
-                    btnCancelRestart.Enabled = false;
-                    btnRestart.Enabled = true;
+                    UpdateCommandStatus((string)message);
+                }
+                else if (((string)message).StartsWith("[09")) // Available Commands
+                {
+                    LoadCommands((string)message);
+                }
+            }
+        }
+
+        private void UpdateCommandStatus(string message)
+        {
+            string ev = message.Substring(1, message.IndexOf(":") - 1);
+            string command = message.Substring(message.IndexOf(":") + 1);
+            command = command.Substring(0, command.IndexOf("]"));
+
+            ToolStripMenuItem executeItem = null;
+            ToolStripMenuItem cancelItem = null;
+            foreach (ToolStripMenuItem item in ExecuteDropDown.DropDownItems)
+            {
+                if (item.Tag.ToString() == command)
+                {
+                    executeItem = item;
+                    break;
+                }
+            }
+            foreach (ToolStripMenuItem item in CancelDropDown.DropDownItems)
+            {
+                if (item.Tag.ToString() == command)
+                {
+                    cancelItem = item;
+                    break;
+                }
+            }
+            if ((cancelItem != null) && (executeItem != null))
+            {
+                switch (ev)
+                {
+                    case "01": // requested
+                        cancelItem.Enabled = true;
+                        executeItem.Enabled = false;
+                        break;
+                    case "02": // Started
+                        cancelItem.Enabled = false;
+                        executeItem.Enabled = false;
+                        break;
+                    case "03": // Completed
+                    case "04": // Cancelled
+                        cancelItem.Enabled = false;
+                        executeItem.Enabled = true;
+                        break;
+                    default:
+                        cancelItem.Enabled = false;
+                        executeItem.Enabled = true;
+                        break;
                 }
             }
         }
