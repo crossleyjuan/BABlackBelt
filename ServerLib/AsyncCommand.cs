@@ -64,42 +64,53 @@ namespace ServerLib
         {
             _running = true;
 
-            ProcessStartInfo progInfo = new ProcessStartInfo();
-            progInfo.CreateNoWindow = true;
-            progInfo.RedirectStandardError = true;
-            progInfo.RedirectStandardOutput = true;
-
-            string script = this.Command.Script;
-
-            if (string.IsNullOrEmpty(script))
+            try
             {
-                script = @"c:\Windows\System32\iisreset.exe";
+                ProcessStartInfo progInfo = new ProcessStartInfo();
+                progInfo.CreateNoWindow = true;
+                progInfo.RedirectStandardError = true;
+                progInfo.RedirectStandardOutput = true;
+
+                string script = this.Command.Script;
+
+                if (string.IsNullOrEmpty(script))
+                {
+                    script = @"c:\Windows\System32\iisreset.exe";
+                }
+
+                progInfo.FileName = script;
+
+                Process process = new Process();
+                if (this.Command.Arguments != null)
+                {
+                    progInfo.Arguments = this.Command.Arguments;
+                }
+                //progInfo.WorkingDirectory = _folder;
+                progInfo.UseShellExecute = false;
+
+                process.StartInfo = progInfo;
+                process.Start();
+
+                string stdout_str = process.StandardOutput.ReadToEnd(); // pick up STDOUT
+                string stderr_str = process.StandardError.ReadToEnd();  // pick up STDERR
+
+                process.WaitForExit();
+                process.Close();
+
+                ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
+                restartBroadCast.From = client.Id;
+                restartBroadCast.Date = DateTime.Now.ToString();
+                restartBroadCast.Content = "[03:" + this.Command.Key + "] " + this.Command.Text + " requested by " + client.Id + " completed";
+                server.BroadCastMessage(restartBroadCast);
             }
-
-            progInfo.FileName = script;
-
-            Process process = new Process();
-            if (this.Command.Arguments != null)
+            catch (Exception e)
             {
-                progInfo.Arguments = this.Command.Arguments;
+                ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
+                restartBroadCast.From = client.Id;
+                restartBroadCast.Date = DateTime.Now.ToString();
+                restartBroadCast.Content = "[03:" + this.Command.Key + "] " + this.Command.Text + " requested by " + client.Id + " has failed with Error: " + e.Message;
+                server.BroadCastMessage(restartBroadCast);
             }
-            //progInfo.WorkingDirectory = _folder;
-            progInfo.UseShellExecute = false;
-
-            process.StartInfo = progInfo;
-            process.Start();
-
-            string stdout_str = process.StandardOutput.ReadToEnd(); // pick up STDOUT
-            string stderr_str = process.StandardError.ReadToEnd();  // pick up STDERR
-
-            process.WaitForExit();
-            process.Close();
-
-            ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
-            restartBroadCast.From = client.Id;
-            restartBroadCast.Date = DateTime.Now.ToString();
-            restartBroadCast.Content = "[03:" + this.Command.Key + "] " + this.Command.Text + " requested by " + client.Id + " completed";
-            server.BroadCastMessage(restartBroadCast);
 
             OnCommandCompleted(this._key);
             _running = false;

@@ -20,7 +20,8 @@ namespace ServerLib
             try
             {
                 XmlDocument doc = new XmlDocument();
-                doc.Load("Commands.xml");
+                
+                doc.Load(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Commands.xml"));
                 XmlNamespaceManager manager = new XmlNamespaceManager(doc.NameTable);
 
                 _commands.Clear();

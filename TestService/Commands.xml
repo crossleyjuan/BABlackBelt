@@ -17,4 +17,9 @@
     <key>stopphoenix</key>
     <script>iisreset</script>
   </Command>
+  <Command>
+    <text>Error</text>
+    <key>error</key>
+    <script>blah</script>
+  </Command>
 </Commands>

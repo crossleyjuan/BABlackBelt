@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Commands>
+  <Command>
+    <text>Restart</text>
+    <key>restart</key>
+    <script>c:\windows\system32\iisreset.exe</script>
+    <arguments>/restart</arguments>
+  </Command>
+</Commands>
