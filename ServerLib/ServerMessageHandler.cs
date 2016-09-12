@@ -38,6 +38,11 @@ namespace ServerLib
                 handleHello(server, client, message);
                 return false;
             }
+            if (message.Content.StartsWith("/handshake"))
+            {
+                handleHandShake(server, client, message);
+                return false;
+            }
             if (message.Content.StartsWith("/restart"))
             {
                 AsyncController.ExecuteCommand(server, client, message);
@@ -78,6 +83,27 @@ namespace ServerLib
             return true;
         }
 
+        private static void handleHandShake(ChatServer server, ChatClient client, ChatClient.Message message)
+        {
+            string unparsedSettings = message.Content.Substring("/handshake ".Length).Trim();
+
+            string[] options = unparsedSettings.Split(new Char[] { '\n' });
+
+            foreach (string option in options)
+            {
+                string optionKey = option.Substring(0, option.IndexOf(":"));
+                string optionValue = option.Substring(option.IndexOf(":") + 1);
+                switch (optionKey)
+                {
+                    case "version":
+                        {
+                            client.Version = optionValue;
+                            break;
+                        }
+                }
+            }
+        }
+
         private static void ProcessCommand(ChatClient.Message message, ChatServer server, ChatClient client)
         {
             AsyncController.ExecuteCommand(server, client, message);
@@ -87,7 +113,7 @@ namespace ServerLib
         {
             ServerLib.ChatClient.Message msg = new ServerLib.ChatClient.Message();
             msg.From = client.Id;
-            msg.Date = DateTime.Now.ToString();
+            msg.Date = DateTime.Now;
             Dictionary<string, Command> commands = AsyncController.Commands;
 
             bool porcelain = (message.Content.IndexOf("porcelain") > -1);
@@ -118,7 +144,7 @@ namespace ServerLib
             client.Id = name;
 
             ServerLib.ChatClient.Message broadcast = new ServerLib.ChatClient.Message();
-            broadcast.Date = DateTime.Now.ToString();
+            broadcast.Date = DateTime.Now;
             broadcast.From = client.Id;
             broadcast.Content = "[06] " + client.Id + " has joined the chat room";
             server.BroadCastMessage(broadcast, client);
@@ -126,7 +152,7 @@ namespace ServerLib
             // Sends hello back!
             ServerLib.ChatClient.Message msg = new ServerLib.ChatClient.Message();
             msg.From = client.Id;
-            msg.Date = DateTime.Now.ToString();
+            msg.Date = DateTime.Now;
             msg.Content = "Hello " + client.Id + " good to see you!";
 
             Sender s = new Sender()
@@ -134,13 +160,26 @@ namespace ServerLib
                 Name = "Server"
             };
             client.SendMessage(s, msg);
+
+            if (client.Version != "2.0" && !client.WelcomeMessageSent)
+            {
+                // Sends hello back!
+                ServerLib.ChatClient.Message msgWelcome = new ServerLib.ChatClient.Message();
+                msgWelcome.From = client.Id;
+                msgWelcome.Date = DateTime.Now;
+
+                msgWelcome.Content = "Your client requires upgrade, please run the installers to be able to use the new features";
+
+                client.SendMessage(s, msgWelcome);
+                client.WelcomeMessageSent = true;
+            }
         }
 
         private static void SendUsersList(ChatServer server, ChatClient client)
         {
             ServerLib.ChatClient.Message msg = new ServerLib.ChatClient.Message();
             msg.From = client.Id;
-            msg.Date = DateTime.Now.ToString();
+            msg.Date = DateTime.Now;
             List<ChatClient> users = server.GetClients();
             msg.Content = "[07] Users list:";
             foreach (ChatClient c in users)
@@ -159,7 +198,7 @@ namespace ServerLib
         {
             ServerLib.ChatClient.Message msg = new ServerLib.ChatClient.Message();
             msg.From = client.Id;
-            msg.Date = DateTime.Now.ToString();
+            msg.Date = DateTime.Now;
 
             StringBuilder sb = new StringBuilder();
             sb.Append("Commands help:\r\n");
@@ -182,7 +221,7 @@ namespace ServerLib
         {
             ServerLib.ChatClient.Message msg = new ServerLib.ChatClient.Message();
             msg.From = client.Id;
-            msg.Date = DateTime.Now.ToString();
+            msg.Date = DateTime.Now;
             StringBuilder sb = new StringBuilder();
             sb.Append("[08]");
 

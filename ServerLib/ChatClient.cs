@@ -54,7 +54,7 @@ namespace ServerLib
         public struct Message
         {
             public string From;
-            public string Date;
+            public DateTime Date;
             public string Content;
         }
 
@@ -69,11 +69,13 @@ namespace ServerLib
             _client = null;
             Server = server;
             Port = port;
+            Version = "1.0";
         }
 
         internal ChatClient(TcpClient client)
         {
             this._client = client;
+            Version = "1.0";
         }
 
         private void OnTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -142,6 +144,10 @@ namespace ServerLib
                 Id = _client.Client.RemoteEndPoint.ToString();
                 WaitMessage();
 
+                Version = "2.0";
+
+                SendHandshake();
+
                 if (ConnectHandler != null) ConnectHandler(this);
             }
             else
@@ -154,7 +160,7 @@ namespace ServerLib
         {
             ServerLib.ChatClient.Message message = new ChatClient.Message();
             message.From = this.Id;
-            message.Date = DateTime.Now.ToString();
+            message.Date = DateTime.Now;
             message.Content = content;
             return message;
         }
@@ -163,7 +169,7 @@ namespace ServerLib
         {
             ServerLib.ChatClient.Message message = new ChatClient.Message();
             message.From = this.Id;
-            message.Date = DateTime.Now.ToString();
+            message.Date = DateTime.Now;
             message.Content = "/hello " + nick;
             Sender s = new Sender()
             {
@@ -173,11 +179,32 @@ namespace ServerLib
             this.Id = nick;
         }
 
+        public void SendHandshake()
+        {
+            ServerLib.ChatClient.Message message = new ChatClient.Message();
+            message.From = this.Id;
+            message.Date = DateTime.Now;
+            message.Content = "/handshake ";
+            message.Content += "version:2.0\n";
+            Sender s = new Sender()
+            {
+                Name = "Me"
+            };
+            SendMessage(s, message);
+        }
+
         public void SendMessage(Sender sender, Message message)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("user:{0}\n", sender.Name);
-            sb.AppendFormat("date:{0}\n", message.Date);
+            if (Version == "1.0")
+            {
+                sb.AppendFormat("date:{0}\n", message.Date.ToString());
+            }
+            else
+            {
+                sb.AppendFormat("date:{0}\n", message.Date.ToString("yyyyMMdd.HHmmss"));
+            }
             sb.AppendFormat("message:{0}<EOF>", message.Content);
 
             byte[] data = UTF8Encoding.UTF8.GetBytes(sb.ToString());
@@ -244,7 +271,34 @@ namespace ServerLib
             Message m = new Message();
             string[] lines = p.Split('\n');
             m.From = lines[0].Split(':')[1];
-            m.Date = lines[1].Split(':')[1];
+            if (Version == "1.0") {
+                m.Date = DateTime.Now;
+            }
+            else
+            {
+                string sDate = lines[1].Substring(lines[1].IndexOf(":") + 1);
+                try
+                {
+                    string year = sDate.Substring(0, 4);
+                    string month = sDate.Substring(4, 2);
+                    string day = sDate.Substring(6, 2);
+                    string hour = sDate.Substring(9, 2);
+                    string min = sDate.Substring(11, 2);
+                    string sec = sDate.Substring(13, 2);
+
+                    m.Date = new DateTime(Convert.ToInt32(year),
+                        Convert.ToInt32(month),
+                        Convert.ToInt32(day),
+                        Convert.ToInt32(hour),
+                        Convert.ToInt32(min),
+                        Convert.ToInt32(sec)
+                        );
+                }
+                catch
+                {
+                    m.Date = DateTime.Now;
+                }
+            }
             m.Content = lines[2].Substring(lines[2].IndexOf(':') + 1);
             for (int x = 3; x < lines.Length; x++)
             {
@@ -285,5 +339,9 @@ namespace ServerLib
         public string Server { get; set; }
 
         public int Port { get; set; }
+
+        public string Version { get; set; }
+
+        public bool WelcomeMessageSent { get; set; }
     }
 }

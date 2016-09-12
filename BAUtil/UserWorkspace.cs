@@ -231,7 +231,7 @@ namespace BABlackBelt
             {
                 message.From = _client.Id;
             }
-            message.Date = DateTime.Now.ToString();
+            message.Date = DateTime.Now;
             message.Content = sMessage;
             Sender s = new Sender()
             {

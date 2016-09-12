@@ -92,7 +92,7 @@ namespace ServerLib
 
                 ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
                 restartBroadCast.From = client.Id;
-                restartBroadCast.Date = DateTime.Now.ToString();
+                restartBroadCast.Date = DateTime.Now;
                 restartBroadCast.Content = "[01:" + cmd.Key + "] " + cmd.Text + " requested by " + client.Id + ", to cancel send /cancel " + cmd.Key;
                 server.BroadCastMessage(restartBroadCast);
             }
@@ -100,7 +100,7 @@ namespace ServerLib
             {
                 ServerLib.ChatClient.Message msg = new ServerLib.ChatClient.Message();
                 msg.From = client.Id;
-                msg.Date = DateTime.Now.ToString();
+                msg.Date = DateTime.Now;
                 msg.Content = "Unknown command:" + command;
 
                 Sender s = new Sender()
@@ -129,7 +129,7 @@ namespace ServerLib
             {
                 ServerLib.ChatClient.Message msg = new ServerLib.ChatClient.Message();
                 msg.From = client.Id;
-                msg.Date = DateTime.Now.ToString();
+                msg.Date = DateTime.Now;
                 msg.Content = "[10] Your command cannot be cancelled, it has already started or it's completed.";
 
                 Sender s = new Sender()

@@ -96,7 +96,7 @@ namespace ServerLib
         private void RemoveClient(ChatClient client)
         {
             ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
-            restartBroadCast.Date = DateTime.Now.ToString();
+            restartBroadCast.Date = DateTime.Now;
             restartBroadCast.From = client.Id;
             restartBroadCast.Content = "[05] " + client.Id + " has left the chat room<EOF>";
             _clients.Remove(client);
@@ -115,7 +115,7 @@ namespace ServerLib
                 }
             }
             ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
-            restartBroadCast.Date = DateTime.Now.ToString();
+            restartBroadCast.Date = DateTime.Now;
             foreach (ChatClient c in toRemove)
             {
                 RemoveClient(c);

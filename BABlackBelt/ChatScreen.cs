@@ -63,7 +63,7 @@ namespace BABlackBelt
             }
             if (!string.IsNullOrEmpty(content))
             {
-                AddText(string.Format("[{0}]: {1}\r\n", message.From, content));
+                AddText(string.Format("[{0} {2}]: {1}\r\n", message.From, content, message.Date.ToString("HH:MM:ss")));
                 StartFlash();
             }
         }

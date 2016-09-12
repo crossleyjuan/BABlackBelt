@@ -50,7 +50,7 @@ namespace ServerLib
             CustomTimer timer = (CustomTimer)sender;
             ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
             restartBroadCast.From = timer.Instance.Client.Id;
-            restartBroadCast.Date = DateTime.Now.ToString();
+            restartBroadCast.Date = DateTime.Now;
             restartBroadCast.Content = "[02:" + timer.Instance.Command.Key + "] " + timer.Instance.Command.Text + " requested by " + timer.Instance.Client.Id + " starting now";
             
             timer.Instance.Server.BroadCastMessage(restartBroadCast);
@@ -99,7 +99,7 @@ namespace ServerLib
 
                 ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
                 restartBroadCast.From = client.Id;
-                restartBroadCast.Date = DateTime.Now.ToString();
+                restartBroadCast.Date = DateTime.Now;
                 restartBroadCast.Content = "[03:" + this.Command.Key + "] " + this.Command.Text + " requested by " + client.Id + " completed";
                 server.BroadCastMessage(restartBroadCast);
             }
@@ -107,7 +107,7 @@ namespace ServerLib
             {
                 ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
                 restartBroadCast.From = client.Id;
-                restartBroadCast.Date = DateTime.Now.ToString();
+                restartBroadCast.Date = DateTime.Now;
                 restartBroadCast.Content = "[03:" + this.Command.Key + "] " + this.Command.Text + " requested by " + client.Id + " has failed with Error: " + e.Message;
                 server.BroadCastMessage(restartBroadCast);
             }
@@ -134,7 +134,7 @@ namespace ServerLib
             _timer = null;
             ServerLib.ChatClient.Message restartBroadCast = new ServerLib.ChatClient.Message();
             restartBroadCast.From = client.Id;
-            restartBroadCast.Date = DateTime.Now.ToString();
+            restartBroadCast.Date = DateTime.Now;
             restartBroadCast.Content = "[04:" + Command.Key + "] " + Command.Text + " has been cancelled by " + client.Id;
             this.Server.BroadCastMessage(restartBroadCast);
 
