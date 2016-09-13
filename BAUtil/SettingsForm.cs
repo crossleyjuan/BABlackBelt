@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BABlackBelt.Git;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -32,27 +33,43 @@ namespace BABlackBelt
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             Git.GitUtil git = new Git.GitUtil("");
-            txtFullname.Text = git.GetGlobal("user.name");
-            txtEmail.Text = git.GetGlobal("user.email");
+            try
+            {
+                txtFullname.Text = git.GetGlobal("user.name");
+                txtEmail.Text = git.GetGlobal("user.email");
+                txtGitFolder.Text = GitUtil.GetGitFolder();
+            }
+            catch
+            {
+                // Exceptions are ignored as they will fail because of the configuration
+            }
             txtBlackBeltServer.Text = _userSettings["blackbeltserver"];
             if (_projectSettings != null)
             {
                 txtConnectionString.Text = _projectSettings["ConnectionString"];
             }
+
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
             if (CheckSettings())
             {
-                Git.GitUtil git = new Git.GitUtil("");
-                git.setGlobal("user.name", txtFullname.Text);
-                git.setGlobal("user.email", txtEmail.Text);
-
                 Settings settings = Settings.getSettings();
                 settings["blackbeltserver"] = txtBlackBeltServer.Text;
                 settings["version"] = "1.0";
+                settings["Git_PATH"] = txtGitFolder.Text;
                 settings.saveSettings();
+
+                Git.GitUtil git = new Git.GitUtil("");
+                if (!string.IsNullOrEmpty(txtFullname.Text))
+                {
+                    git.setGlobal("user.name", txtFullname.Text);
+                }
+                if (!string.IsNullOrEmpty(txtEmail.Text))
+                {
+                    git.setGlobal("user.email", txtEmail.Text);
+                }
 
                 if (_projectSettings != null)
                 {
@@ -91,6 +108,16 @@ namespace BABlackBelt
                 MessageBox.Show("BlackBelt server is required");
                 return false;
             }
+            if (string.IsNullOrEmpty(txtGitFolder.Text))
+            {
+                MessageBox.Show("Git Installation folder is required");
+                return false;
+            }
+            if (!GitUtil.CheckValidGitFolderInstalation(txtGitFolder.Text))
+            {
+                MessageBox.Show("Git Installation folder is invalid please select the folder where the bin/git.exe is installed on.");
+                return false;
+            }
             return true;
         }
 
@@ -102,6 +129,26 @@ namespace BABlackBelt
         private void groupBox3_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnSelectGitFolder_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            dialog.ShowNewFolderButton = false;
+            if (dialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            {
+                string folder = dialog.SelectedPath;
+
+                if (GitUtil.CheckValidGitFolderInstalation(folder))
+                {
+                    txtGitFolder.Text = folder;
+                }
+                else
+                {
+                    MessageBox.Show("Please select the folder where git is installed, it has to have a bin folder on it with git.exe on it.");
+                }
+
+            }
         }
 
     }

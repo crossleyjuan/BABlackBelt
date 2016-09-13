@@ -149,9 +149,13 @@ namespace BABlackBelt.Git
             gitInfo.CreateNoWindow = true;
             gitInfo.RedirectStandardError = true;
             gitInfo.RedirectStandardOutput = true;
-            string gitFolder = ConfigurationSettings.AppSettings["Git_PATH"];// @"C:\Program Files (x86)\Git";
+            string gitFolder = GetGitFolder();
             gitInfo.FileName = gitFolder + @"\bin\git.exe";
 
+            if (!File.Exists(gitInfo.FileName))
+            {
+                throw new ApplicationException("git.exe not found, please check the settings and selected the location of git folder");
+            }
             Process gitProcess = new Process();
             gitInfo.Arguments = command; // such as "fetch orign"
             gitInfo.WorkingDirectory = _folder;
@@ -196,6 +200,30 @@ namespace BABlackBelt.Git
             {
                 return false;
             }
+        }
+
+        public static bool CheckValidGitFolderInstalation(string folder)
+        {
+            string gitExe = Path.Combine(folder, "bin", "git.exe");
+
+            if (File.Exists(gitExe))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static string GetGitFolder()
+        {
+            string gitFolder = Settings.getSettings()["Git_PATH"];// @"C:\Program Files (x86)\Git";
+            if (string.IsNullOrEmpty(gitFolder))
+            {
+                gitFolder = ConfigurationSettings.AppSettings["Git_PATH"];
+            }
+            return gitFolder;
         }
     }
 }

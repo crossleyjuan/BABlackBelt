@@ -39,12 +39,20 @@ namespace BABlackBelt
         {
             this.Cursor = Cursors.WaitCursor;
 
-            _git.Reset();
+            try { 
+                _git.Reset();
 
-            BAFolderSyncManager.SyncElements(_git, _currentBranch, _projectSettings, _gitFolder);
+                BAFolderSyncManager.SyncElements(_git, _currentBranch, _projectSettings, _gitFolder);
 
-            _gitChanges = _git.GetStatus();
-            showChanges();
+                _gitChanges = _git.GetStatus();
+                showChanges();
+            }
+            catch (Exception ex)
+            {
+                this.Cursor = Cursors.Default;
+                MessageBox.Show("Error", "Git has generated and error: " + ex.Message);
+                return;
+            }
         }
 
         private void showChanges()
@@ -86,23 +94,33 @@ namespace BABlackBelt
             {
                 return;
             }
-            foreach (var item in lstChanges.CheckedItems)
+            string resultPull;
+            try
             {
-                GitChange change = (GitChange)item;
+                foreach (var item in lstChanges.CheckedItems)
+                {
+                    GitChange change = (GitChange)item;
 
-                if (change.ChangeType != "deleted")
-                {
-                    _git.Add(change.File);
+                    if (change.ChangeType != "deleted")
+                    {
+                        _git.Add(change.File);
+                    }
+                    else
+                    {
+                        _git.Remove(change.File);
+                    }
                 }
-                else
-                {
-                    _git.Remove(change.File);
-                }
+
+                _git.Commit(txtCommit.Text);
+
+                resultPull = _git.Pull("origin", _currentBranch);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error", "Git has generated and error: " + ex.Message);
+                return;
             }
 
-            _git.Commit(txtCommit.Text);
-
-            string resultPull = _git.Pull("origin", _currentBranch);
 
             bool requireConfirmation = false;
             if (resultPull.IndexOf("Already up-to-date") < 0)
@@ -117,11 +135,18 @@ namespace BABlackBelt
             }
             if (performPush)
             {
-                string pushResult = _git.Push("origin", _currentBranch);
+                try { 
+                    string pushResult = _git.Push("origin", _currentBranch);
 
-                GitResult.ShowResult("git push origin master:\r\n\r\n" + pushResult);
+                    GitResult.ShowResult("git push origin master:\r\n\r\n" + pushResult);
+                    RefreshCodeBase();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error", "Git has generated and error: " + ex.Message);
+                    return;
+                }
             }
-            RefreshCodeBase();
         }
 
         private void mnuDiffTool_Click(object sender, EventArgs e)
@@ -130,7 +155,15 @@ namespace BABlackBelt
 
             if (change != null)
             {
-                _git.ShowDiff(change.File);
+                try
+                {
+                    _git.ShowDiff(change.File);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error", "Git has generated and error: " + ex.Message);
+                    return;
+                }
             }
         }
 

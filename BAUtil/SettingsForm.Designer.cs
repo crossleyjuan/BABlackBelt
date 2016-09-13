@@ -41,6 +41,9 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.txtBlackBeltServer = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtGitFolder = new System.Windows.Forms.TextBox();
+            this.btnSelectGitFolder = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.gProjectInfo.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -48,20 +51,23 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnSelectGitFolder);
+            this.groupBox1.Controls.Add(this.txtGitFolder);
+            this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.txtEmail);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.txtFullname);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(555, 102);
+            this.groupBox1.Size = new System.Drawing.Size(555, 159);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Git";
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(121, 62);
+            this.txtEmail.Location = new System.Drawing.Point(121, 100);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(413, 20);
             this.txtEmail.TabIndex = 5;
@@ -69,7 +75,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 62);
+            this.label2.Location = new System.Drawing.Point(16, 100);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(32, 13);
             this.label2.TabIndex = 4;
@@ -77,7 +83,7 @@
             // 
             // txtFullname
             // 
-            this.txtFullname.Location = new System.Drawing.Point(119, 28);
+            this.txtFullname.Location = new System.Drawing.Point(119, 66);
             this.txtFullname.Name = "txtFullname";
             this.txtFullname.Size = new System.Drawing.Size(415, 20);
             this.txtFullname.TabIndex = 3;
@@ -85,7 +91,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 28);
+            this.label1.Location = new System.Drawing.Point(16, 66);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 2;
@@ -94,7 +100,7 @@
             // btnOk
             // 
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(367, 286);
+            this.btnOk.Location = new System.Drawing.Point(367, 343);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(97, 23);
             this.btnOk.TabIndex = 3;
@@ -105,7 +111,7 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(470, 286);
+            this.button1.Location = new System.Drawing.Point(470, 343);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(97, 23);
             this.button1.TabIndex = 4;
@@ -116,7 +122,7 @@
             // 
             this.gProjectInfo.Controls.Add(this.txtConnectionString);
             this.gProjectInfo.Controls.Add(this.label4);
-            this.gProjectInfo.Location = new System.Drawing.Point(12, 120);
+            this.gProjectInfo.Location = new System.Drawing.Point(12, 177);
             this.gProjectInfo.Name = "gProjectInfo";
             this.gProjectInfo.Size = new System.Drawing.Size(555, 82);
             this.gProjectInfo.TabIndex = 6;
@@ -143,7 +149,7 @@
             // 
             this.groupBox3.Controls.Add(this.txtBlackBeltServer);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(12, 208);
+            this.groupBox3.Location = new System.Drawing.Point(12, 265);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(555, 72);
             this.groupBox3.TabIndex = 7;
@@ -167,11 +173,37 @@
             this.label3.TabIndex = 9;
             this.label3.Text = "Black Belt Server";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(16, 29);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(52, 13);
+            this.label5.TabIndex = 6;
+            this.label5.Text = "Git Folder";
+            // 
+            // txtGitFolder
+            // 
+            this.txtGitFolder.Location = new System.Drawing.Point(119, 29);
+            this.txtGitFolder.Name = "txtGitFolder";
+            this.txtGitFolder.Size = new System.Drawing.Size(365, 20);
+            this.txtGitFolder.TabIndex = 7;
+            // 
+            // btnSelectGitFolder
+            // 
+            this.btnSelectGitFolder.Location = new System.Drawing.Point(490, 27);
+            this.btnSelectGitFolder.Name = "btnSelectGitFolder";
+            this.btnSelectGitFolder.Size = new System.Drawing.Size(44, 23);
+            this.btnSelectGitFolder.TabIndex = 8;
+            this.btnSelectGitFolder.Text = "...";
+            this.btnSelectGitFolder.UseVisualStyleBackColor = true;
+            this.btnSelectGitFolder.Click += new System.EventHandler(this.btnSelectGitFolder_Click);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(579, 317);
+            this.ClientSize = new System.Drawing.Size(582, 400);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.gProjectInfo);
             this.Controls.Add(this.button1);
@@ -206,6 +238,9 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox txtBlackBeltServer;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnSelectGitFolder;
+        private System.Windows.Forms.TextBox txtGitFolder;
+        private System.Windows.Forms.Label label5;
 
     }
 }

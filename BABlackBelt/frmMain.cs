@@ -298,32 +298,39 @@ namespace BABlackBelt
 
                 StatusScreen fullProcessScreen = StatusScreen.ShowStatus(5);
 
-                Git.GitUtil git = new GitUtil(serverFolder);
-                git.ExecuteGitCommand("init --bare", true);
-                fullProcessScreen.UpdateStatus(1, "Git folder initialized");
+                try
+                {
+                    Git.GitUtil git = new GitUtil(serverFolder);
+                    git.ExecuteGitCommand("init --bare", true);
+                    fullProcessScreen.UpdateStatus(1, "Git folder initialized");
 
-                git = new GitUtil(projectFolder);
-                string result = git.GitClone(serverFolder, projectFolder);
+                    git = new GitUtil(projectFolder);
+                    string result = git.GitClone(serverFolder, projectFolder);
 
-                fullProcessScreen.UpdateStatus(2, "Git folder cloned");
+                    fullProcessScreen.UpdateStatus(2, "Git folder cloned");
 
-                Settings projectSettings = Settings.getProjectSettings(projectFolder);
+                    Settings projectSettings = Settings.getProjectSettings(projectFolder);
 
-                projectSettings["ConnectionString"] = connectionString;
+                    projectSettings["ConnectionString"] = connectionString;
 
-                projectSettings.saveSettings();
+                    projectSettings.saveSettings();
 
-                fullProcessScreen.UpdateStatus(3, "Project Folder Initialized");
+                    fullProcessScreen.UpdateStatus(3, "Project Folder Initialized");
 
-                git.Add("project.config");
-                git.Commit("Initial commit");
+                    git.Add("project.config");
+                    git.Commit("Initial commit");
 
-                result = git.Push("origin", "master");
-                fullProcessScreen.UpdateStatus(4, "Ready to use");
+                    result = git.Push("origin", "master");
+                    fullProcessScreen.UpdateStatus(4, "Ready to use");
 
-                fullProcessScreen.Close();
+                    fullProcessScreen.Close();
 
-                txtGitFolder.Text = projectFolder;
+                    txtGitFolder.Text = projectFolder;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error", "Git has generated and error: " + ex.Message);
+                }
             }
         }
 
